@@ -31,8 +31,8 @@ Basic usage:
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to Type.js type-definitions.
 
-I personally use _ as base object for most of my tools. But be careful merging type.js with other libraries using _, as there
-is a fair chance for method-name conflicts.
+I personally use _ as base object for most of my tools. But be careful merging type.js with other libraries using _, avoid
+method-name conflicts.
 
 ___
 
@@ -77,7 +77,7 @@ API
 **Type.typeof**
 > `<String> Type.typeof( value )`
 
-> Returns a lowercase string representation of the type of value.
+> Returns a lowercase string representation of the type of value, according to Type.js types.
 
 **Type.isBoolean**
 > `<Boolean> Type.isBoolean( value )`

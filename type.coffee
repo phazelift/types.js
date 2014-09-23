@@ -25,7 +25,7 @@ testValues= ( predicate, breakState, values= [] ) ->
 		return breakState if (predicate value) is breakState
 	return not breakState
 
-hasType=
+types=
 	'Undefined'	: (value) -> value is undefined
 	'Null'		: (value) -> value is null
 	'Boolean'	: (value) -> typeof value is 'boolean'
@@ -39,14 +39,14 @@ hasType=
 	'NaN'			: (value) -> (typeof value is 'number') and (value isnt value)
 
 breakIfEqual= true
-do -> for name, predicate of hasType then do ( name, predicate ) ->
+do -> for name, predicate of types then do ( name, predicate ) ->
 	Type[ 'is'+ name ]	= predicate
 	Type[ 'not'+ name ]	= ( value ) -> not predicate value
 	Type[ 'has'+ name ]	= -> testValues predicate, breakIfEqual, arguments
 	Type[ 'all'+ name ]	= -> testValues predicate, not breakIfEqual, arguments
 
 Type.typeof= ( value ) ->
-	for type, predicate of hasType
+	for type, predicate of types
 		return type.toLowerCase() if predicate(value) is true
 	return 'unknown'
 
