@@ -20,8 +20,8 @@
 Type= {}
 
 testValues= ( predicate, breakState, values= [] ) ->
-	return false if arguments[2].length < 1
-	for value in arguments[2]
+	return false if values.length < 1
+	for value in values
 		return breakState if (predicate value) is breakState
 	return not breakState
 
