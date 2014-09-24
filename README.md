@@ -99,8 +99,8 @@ API
 
 > Returns true only if all given arguments are either a Boolean true or false
 
-All remaining methods are equal to the last four above, except for that they differ in the type being checked. A complete
-list of all type-check methods in Type:
+All remaining methods are equal to the last four above, except for that they differ in the type being checked. The complete
+list of all these methods:
 
 
 is						|not						|has						|all
