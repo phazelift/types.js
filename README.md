@@ -103,17 +103,17 @@ All remaining methods are equal to the last four above, except for that they dif
 list of all these methods:
 
 
-is						|not						|has						|all
+not					|is						|has						|all
 :-----------------|:-------------------|:-------------------|:------------------
-Type.isBoolean		|Type.notBoolean		|Type.hasBoolean		|Type.allBoolean
-Type.isString		|Type.notString		|Type.hasString		|Type.allString
-Type.isNumber		|Type.notNumber		|Type.hasNumber		|Type.allNumber
-Type.isObject		|Type.notObject		|Type.hasObject		|Type.allObject
-Type.isArray		|Type.notArray			|Type.hasArray			|Type.allArray
-Type.isFunction	|Type.notFunction		|Type.hasFunction		|Type.allFunction
-Type.isRegexp		|Type.notRegexp		|Type.hasRegexp		|Type.allRegexp
-Type.isDate			|Type.notDate			|Type.hasDate			|Type.allDate
-Type.isNull			|Type.notNull			|Type.hasNull			|Type.allNull
-Type.isUndefined	|Type.notUndefined	|Type.hasUndefined	|Type.allUndefined
-Type.isNaN			|Type.notNaN			|Type.hasNaN			|Type.allNaN
+Type.notBoolean	|Type.isBoolean		|Type.hasBoolean		|Type.allBoolean
+Type.notString		|Type.isString			|Type.hasString		|Type.allString
+Type.notNumber		|Type.isNumber			|Type.hasNumber		|Type.allNumber
+Type.notObject		|Type.isObject			|Type.hasObject		|Type.allObject
+Type.notArray		|Type.isArray			|Type.hasArray			|Type.allArray
+Type.notFunction	|Type.isFunction		|Type.hasFunction		|Type.allFunction
+Type.notRegexp		|Type.isRegexp			|Type.hasRegexp		|Type.allRegexp
+Type.notDate		|Type.isDate			|Type.hasDate			|Type.allDate
+Type.notNull		|Type.isNull			|Type.hasNull			|Type.allNull
+Type.notUndefined	|Type.isUndefined		|Type.hasUndefined	|Type.allUndefined
+Type.notNaN			|Type.isNaN				|Type.hasNaN			|Type.allNaN
 
