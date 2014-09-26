@@ -1,4 +1,4 @@
-# type.js - A tiny Javascript type-check library, written in Coffeescript.
+# types.js - A tiny Javascript type-check library, written in Coffeescript.
 #
 # Copyright (c) 2014 Dennis Raymondo van der Sluis
 #
