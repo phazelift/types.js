@@ -1,4 +1,4 @@
-Type.js
+Types.js
 =========
 
 A tiny (1.2kb), but essential Javascript type checking library.
@@ -7,14 +7,14 @@ Especially in non-typed scripting languages like Javascript, proper manual type 
 the Javascript `typeof` operator gives us in some cases vague clues about what type some value is. `typeof []`
 renders `'object'`, even in strict mode! So if we want to know if some input is an `'object'`, we are constantly fooled
 by `typeof` returning `'object'` for `[]`, `null` and `/regexp/`. The latter return `'array'`, `'null'` and `'regexp'`
-respectively in Type.js.
+respectively in Types.js.
 
-Type.js treats `NaN` a little different. In Javascript `NaN` (Not A Number) is of type Number, and `NaN === NaN`
-returns `false`... For that I added `nan` to Type's type-definitions. Now you can test NaN with: `Type.isNaN(NaN)` or
-`Type.typeof( parseInt('Not A Number!') ) === 'nan'`, both will return true.
+Types.js treats `NaN` a little different. In Javascript `NaN` (Not A Number) is of type Number, and `NaN === NaN`
+returns `false`... For that I added `nan` to Type's type-definitions. Now you can test NaN with: `Types.isNaN(NaN)` or
+`Types.typeof( parseInt('Not A Number!') ) === 'nan'`, both will return true.
 
-Be careful with using Type.js for variables created with `new Number()` or other non-literal type instantiations. No
-support for them, because I don't want to get `'number'` on `Type.typeof( new Number(10) )`, as it actually is an object
+Be careful with using Types.js for variables created with `new Number()` or other non-literal type instantiations. No
+support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an object
 where you can add stuff to.
 
 To give it a little more functionality, I've added support for multiple arguments so you can test for multiple values in one
@@ -29,16 +29,16 @@ Basic usage:
 
 **hasString** (and the other has-types) are useful for checking if one or more arguments are of a certain type.
 
-**typeof** Returns a lowercase string representation of the type of the argument value, according to Type.js type-definitions.
+**typeof** Returns a lowercase string representation of the type of the argument value, according to Types.js type-definitions.
 
 ___
 
 ```javascript
-var _= Type;											// browser
-var _= require( './type.js' );							// node.js
+var _= Types;											// browser
+var _= require( './types.js' );							// node.js
 
 // comments reflect the result
-_.isString( 'Hello Type.js!' );							// true
+_.isString( 'Hello Types.js!' );						// true
 _.isString( 23456 );									// false
 _.isBoolean( false );									// true
 _.isArray( [1,2,3] );									// true
@@ -71,28 +71,28 @@ ___
 API
 ---
 
-**Type.typeof**
-> `<String> Type.typeof( value )`
+**Types.typeof**
+> `<String> Types.typeof( value )`
 
-> Returns a lowercase string representation of the type of value, according to Type.js types.
+> Returns a lowercase string representation of the type of value, according to Types.js types.
 
-**Type.isBoolean**
-> `<Boolean> Type.isBoolean( value )`
+**Types.isBoolean**
+> `<Boolean> Types.isBoolean( value )`
 
 > Returns true if the given argument is a Boolean true or false
 
-**Type.notBoolean**
-> `<Boolean> Type.isBoolean( value )`
+**Types.notBoolean**
+> `<Boolean> Types.isBoolean( value )`
 
 > Returns true if the given argument is not a Boolean true or false
 
-**Type.hasBoolean**
-> `<Boolean> Type.hasBoolean( values, [value1, ..., valueN])`
+**Types.hasBoolean**
+> `<Boolean> Types.hasBoolean( values, [value1, ..., valueN])`
 
 > Returns true if any of the given arguments is a Boolean true or false
 
-**Type.allBoolean**
-> `<Boolean> Type.allBoolean( values, [value1, ..., valueN])`
+**Types.allBoolean**
+> `<Boolean> Types.allBoolean( values, [value1, ..., valueN])`
 
 > Returns true only if all given arguments are either a Boolean true or false
 
@@ -102,15 +102,15 @@ list of all these methods:
 
 not					|is						|has						|all
 :-----------------|:-------------------|:-------------------|:------------------
-Type.notBoolean	|Type.isBoolean		|Type.hasBoolean		|Type.allBoolean
-Type.notString		|Type.isString			|Type.hasString		|Type.allString
-Type.notNumber		|Type.isNumber			|Type.hasNumber		|Type.allNumber
-Type.notObject		|Type.isObject			|Type.hasObject		|Type.allObject
-Type.notArray		|Type.isArray			|Type.hasArray			|Type.allArray
-Type.notFunction	|Type.isFunction		|Type.hasFunction		|Type.allFunction
-Type.notRegexp		|Type.isRegexp			|Type.hasRegexp		|Type.allRegexp
-Type.notDate		|Type.isDate			|Type.hasDate			|Type.allDate
-Type.notNull		|Type.isNull			|Type.hasNull			|Type.allNull
-Type.notUndefined	|Type.isUndefined		|Type.hasUndefined	|Type.allUndefined
-Type.notNaN			|Type.isNaN				|Type.hasNaN			|Type.allNaN
+Types.notBoolean	|Types.isBoolean		|Types.hasBoolean		|Types.allBoolean
+Types.notString	|Types.isString		|Types.hasString		|Types.allString
+Types.notNumber	|Types.isNumber		|Types.hasNumber		|Types.allNumber
+Types.notObject	|Types.isObject		|Types.hasObject		|Types.allObject
+Types.notArray		|Types.isArray			|Types.hasArray		|Types.allArray
+Types.notFunction	|Types.isFunction		|Types.hasFunction	|Types.allFunction
+Types.notRegexp	|Types.isRegexp		|Types.hasRegexp		|Types.allRegexp
+Types.notDate		|Types.isDate			|Types.hasDate			|Types.allDate
+Types.notNull		|Types.isNull			|Types.hasNull			|Types.allNull
+Types.notUndefined|Types.isUndefined	|Types.hasUndefined	|Types.allUndefined
+Types.notNaN		|Types.isNaN			|Types.hasNaN			|Types.allNaN
 
