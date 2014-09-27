@@ -1,5 +1,5 @@
 Types.js
-=========
+========
 
 A tiny (1.2kb), but essential Javascript type checking library.
 
@@ -35,7 +35,7 @@ ___
 
 ```javascript
 var _= Types;											// browser
-var _= require( './types.js' );							// node.js
+var _= require( './types.min.js' );						// node.js
 
 // comments reflect the result
 _.isString( 'Hello Types.js!' );						// true
