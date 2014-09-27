@@ -114,3 +114,10 @@ Types.notNull		|Types.isNull			|Types.hasNull			|Types.allNull
 Types.notUndefined|Types.isUndefined	|Types.hasUndefined	|Types.allUndefined
 Types.notNaN		|Types.isNaN			|Types.hasNaN			|Types.allNaN
 
+
+_____________________________
+**types.js type definitions:**
+
+
+'boolean', 'string', 'number', 'object', 'array', 'function', 'regexp', 'date', 'null', 'undefined', 'nan', 'unknown'
+
