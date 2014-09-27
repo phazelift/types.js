@@ -1,0 +1,27 @@
+{
+  "name": "Types",
+  "version": "1.0.0",
+  "description": "A tiny Javascript type-check library",
+  "main": "types.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phazelift/Types.js"
+  },
+  "keywords": [
+    "type",
+    "typeof",
+    "types",
+    "validation"
+  ],
+  "author": "Dennis Raymondo van der Sluis <phazelift@gmail.com> (https://github.com/phazelift/)",
+  "license": "GPL-3",
+  "bugs": {
+    "url": "https://github.com/phazelift/Types.js/issues"
+  },
+  "homepage": "https://github.com/phazelift/Types.js",
+  "dependencies": {},
+  "devDependencies": {}
+}
