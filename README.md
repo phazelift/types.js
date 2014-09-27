@@ -1,4 +1,4 @@
-Types.js
+types.js
 ========
 
 A tiny (1.2kb), but essential Javascript type checking library.
@@ -7,13 +7,13 @@ Especially in non-typed scripting languages like Javascript, proper manual type 
 the Javascript `typeof` operator gives us in some cases vague clues about what type some value is. `typeof []`
 renders `'object'`, even in strict mode! So if we want to know if some input is an `'object'`, we are constantly fooled
 by `typeof` returning `'object'` for `[]`, `null` and `/regexp/`. The latter return `'array'`, `'null'` and `'regexp'`
-respectively in Types.js.
+respectively in types.js.
 
-Types.js treats `NaN` a little different. In Javascript `NaN` (Not A Number) is of type Number, and `NaN === NaN`
+types.js treats `NaN` a little different. In Javascript `NaN` (Not A Number) is of type Number, and `NaN === NaN`
 returns `false`... For that I added `nan` to Type's type-definitions. Now you can test NaN with: `Types.isNaN(NaN)` or
 `Types.typeof( parseInt('Not A Number!') ) === 'nan'`, both will return true.
 
-Be careful with using Types.js for variables created with `new Number()` or other non-literal type instantiations. No
+Be careful with using types.js for variables created with `new Number()` or other non-literal type instantiations. No
 support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an object
 where you can add stuff to.
 
@@ -29,7 +29,7 @@ Basic usage:
 
 **hasString** (and the other has-types) are useful for checking if one or more arguments are of a certain type.
 
-**typeof** Returns a lowercase string representation of the type of the argument value, according to Types.js type-definitions.
+**typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
 
 ___
 
@@ -38,7 +38,7 @@ var _= Types;											// browser
 var _= require( './types.min.js' );						// node.js
 
 // comments reflect the result
-_.isString( 'Hello Types.js!' );						// true
+_.isString( 'Hello types.js!' );						// true
 _.isString( 23456 );									// false
 _.isBoolean( false );									// true
 _.isArray( [1,2,3] );									// true
@@ -74,7 +74,7 @@ API
 **Types.typeof**
 > `<String> Types.typeof( value )`
 
-> Returns a lowercase string representation of the type of value, according to Types.js types.
+> Returns a lowercase string representation of the type of value, according to types.js types.
 
 **Types.isBoolean**
 > `<Boolean> Types.isBoolean( value )`
