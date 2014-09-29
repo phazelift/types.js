@@ -1,6 +1,6 @@
 {
-  "name": "Types",
-  "version": "1.0.0",
+  "name": "types.js",
+  "version": "1.0.1",
   "description": "A tiny Javascript type-check library",
   "main": "types.min.js",
   "scripts": {
@@ -16,7 +16,7 @@
     "types",
     "validation"
   ],
-  "author": "Dennis Raymondo van der Sluis <phazelift@gmail.com> (https://github.com/phazelift/)",
+  "author": "Dennis Raymondo <phazelift@gmail.com> (https://github.com/phazelift/)",
   "license": "GPL-3",
   "bugs": {
     "url": "https://github.com/phazelift/Types.js/issues"

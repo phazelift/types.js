@@ -25,7 +25,7 @@ testValues= ( predicate, breakState, values= [] ) ->
 		return breakState if (predicate value) is breakState
 	return not breakState
 
-types=
+typesPredicates=
 	'Undefined'	: (value) -> value is undefined
 	'Null'		: (value) -> value is null
 	'Boolean'	: (value) -> typeof value is 'boolean'
@@ -38,15 +38,17 @@ types=
 	'Object'		: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value is null)
 	'NaN'			: (value) -> (typeof value is 'number') and (value isnt value)
 
+typesPredicates.StringOrNumber= (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
+
 breakIfEqual= true
-do -> for name, predicate of types then do ( name, predicate ) ->
+do -> for name, predicate of typesPredicates then do ( name, predicate ) ->
 	Types[ 'is'+ name ]	= predicate
 	Types[ 'not'+ name ]	= ( value ) -> not predicate value
 	Types[ 'has'+ name ]	= -> testValues predicate, breakIfEqual, arguments
 	Types[ 'all'+ name ]	= -> testValues predicate, not breakIfEqual, arguments
 
 Types.typeof= ( value ) ->
-	for type, predicate of types
+	for type, predicate of typesPredicates
 		return type.toLowerCase() if predicate(value) is true
 	return 'unknown'
 
