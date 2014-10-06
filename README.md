@@ -1,7 +1,7 @@
 types.js
 ========
 <br/>
-A tiny (1.8kb), but essential Javascript type checking library.
+A tiny (1.7kb), but essential Javascript type checking library.
 
 Especially in non-typed scripting languages like Javascript, proper manual type checking is crucial.
 Because type checking in Javascript is so confusing and contradictory sometimes, I decided to make a
