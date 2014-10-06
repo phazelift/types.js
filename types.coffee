@@ -17,8 +17,38 @@
 
 "use strict"
 
-Types= {}
+Types=
+	# used by forceNumber to set the Radix, defaults to decimals
+	parseIntBase: 10
 
+# types.js default literals, used for literal instantiation when forceType failed
+literals=
+	'Boolean'	: false
+	'String'		: ''
+	'Number'		: 0
+	'Object'		: {}
+	'Array'		: []
+	'Function'	: ->
+
+# returns a function that returns a value tested for a certain type.
+createForce= ( type ) ->
+
+	# will try to convert value in case initial type test failed. failed conversion returns false
+	convertType= ( value ) ->
+		switch type
+			when 'Number' then return value if Types.notNaN value= parseInt value, Types.parseIntBase
+			when 'String' then return value+ '' if Types.isStringOrNumber value
+			else return value if Types.typeof( value ) is type.toLowerCase()
+		return false
+
+	# the actual forctType method, returns the type's literal, if both value and replacement are not of, or convertible to, type
+	return ( value, replacement= value ) ->
+		return value if Types[ 'is'+ type ] value
+		return replacement if false isnt replacement= convertType replacement
+		return literals[ type ]
+
+# test multiple values for a given predicate. returns breakState if predicate is breakState for some value
+# when no break occured, ! breakState will be returned.
 testValues= ( predicate, breakState, values= [] ) ->
 	return false if values.length < 1
 	for value in values
@@ -26,26 +56,28 @@ testValues= ( predicate, breakState, values= [] ) ->
 	return not breakState
 
 typesPredicates=
-	'Undefined'	: (value) -> value is undefined
-	'Null'		: (value) -> value is null
-	'Boolean'	: (value) -> typeof value is 'boolean'
-	'String'		: (value) -> typeof value is 'string'
-	'Function'	: (value) -> typeof value is 'function'
-	'Number'		: (value) -> (typeof value is 'number') and (value is value)
-	'Array'		: (value) -> (typeof value is 'object') and ( value instanceof Array )
-	'RegExp'		: (value) -> value instanceof RegExp
-	'Date'		: (value) -> value instanceof Date
-	'Object'		: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value is null)
-	'NaN'			: (value) -> (typeof value is 'number') and (value isnt value)
+	'Undefined'		: (value) -> value is undefined
+	'Null'			: (value) -> value is null
+	'Boolean'		: (value) -> typeof value is 'boolean'
+	'String'			: (value) -> typeof value is 'string'
+	'StringOrNumber': (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
+	'Function'		: (value) -> typeof value is 'function'
+	'Number'			: (value) -> (typeof value is 'number') and (value is value)
+	'Array'			: (value) -> (typeof value is 'object') and ( value instanceof Array )
+	'RegExp'			: (value) -> value instanceof RegExp
+	'Date'			: (value) -> value instanceof Date
+	'Object'			: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value is null)
+	'NaN'				: (value) -> (typeof value is 'number') and (value isnt value)
 
-typesPredicates.StringOrNumber= (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
-
+# generate all the is/not/has/all/force Types
 breakIfEqual= true
 do -> for name, predicate of typesPredicates then do ( name, predicate ) ->
 	Types[ 'is'+ name ]	= predicate
 	Types[ 'not'+ name ]	= ( value ) -> not predicate value
 	Types[ 'has'+ name ]	= -> testValues predicate, breakIfEqual, arguments
 	Types[ 'all'+ name ]	= -> testValues predicate, not breakIfEqual, arguments
+	# create only forceTypes of types found in literals
+	Types[ 'force'+ name ]= createForce name if name of literals
 
 Types.typeof= ( value ) ->
 	for type, predicate of typesPredicates
