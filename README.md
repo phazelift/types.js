@@ -101,6 +101,10 @@ ___
 API
 ---
 
+**Types.parseIntBase**
+> `<Number> parseIntBase= 10`
+
+> Holds the Radix used by forceNumber, defaults to decimals. Can be set to valid radixes for parseInt().
 
 **Types.forceBoolean**
 > `<String> Types.forceBoolean( value, replacement )`
@@ -152,15 +156,23 @@ notDate				|isDate				|hasDate				|allDate
 notNull				|isNull				|hasNull				|allNull
 notUndefined		|isUndefined		|hasUndefined		|allUndefined
 notNaN				|isNaN				|hasNaN				|allNaN
+
 ____________________________
 **types.js type definitions:**
-
 
 'boolean', 'string', 'number', 'object', 'array', 'function', 'regexp', 'date', 'null', 'undefined', 'nan', 'unknown'
 
 ____________________________
-**types.js default literals**
+**force'Type' and default literals**
 
-Boolean `false` | String `''` | Number `0` | Object `{}` | Array `[]` | Function `function(){}`
-----------------|-------------|------------|-------------|------------|----------------
+> format: `<string> forceString( <any type> value, <string> replacement )`
 
+forceBoolean	|forceString	|forceNumber
+---------------|--------------|--------------
+Boolean `false`|String `''`	|Number `0`
+
+forceObject		|forceArray		|forceFunction
+---------------|--------------|--------------
+Object `{}`		|Array `[]`		|Function `function(){}`
+
+___

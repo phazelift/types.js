@@ -81,9 +81,6 @@
     'String': function(value) {
       return typeof value === 'string';
     },
-    'StringOrNumber': function(value) {
-      return typesPredicates['String'](value) || typesPredicates['Number'](value);
-    },
     'Function': function(value) {
       return typeof value === 'function';
     },
@@ -105,6 +102,10 @@
     'NaN': function(value) {
       return (typeof value === 'number') && (value !== value);
     }
+  };
+
+  typesPredicates.StringOrNumber = function(value) {
+    return typesPredicates['String'](value) || typesPredicates['Number'](value);
   };
 
   breakIfEqual = true;

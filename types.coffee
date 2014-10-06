@@ -60,7 +60,6 @@ typesPredicates=
 	'Null'			: (value) -> value is null
 	'Boolean'		: (value) -> typeof value is 'boolean'
 	'String'			: (value) -> typeof value is 'string'
-	'StringOrNumber': (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
 	'Function'		: (value) -> typeof value is 'function'
 	'Number'			: (value) -> (typeof value is 'number') and (value is value)
 	'Array'			: (value) -> (typeof value is 'object') and ( value instanceof Array )
@@ -68,6 +67,8 @@ typesPredicates=
 	'Date'			: (value) -> value instanceof Date
 	'Object'			: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value is null)
 	'NaN'				: (value) -> (typeof value is 'number') and (value isnt value)
+
+typesPredicates.StringOrNumber= (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
 
 # generate all the is/not/has/all/force Types
 breakIfEqual= true
