@@ -50,7 +50,10 @@ createForce= ( type ) ->
 # test multiple values for a given predicate. returns breakState if predicate is breakState for some value
 # when no break occured, ! breakState will be returned.
 testValues= ( predicate, breakState, values= [] ) ->
-	return false if values.length < 1
+	if values.length < 1
+		# testing 'has' or 'all' for 'undefined' should return true on calls without arguments
+		return true if predicate is typesPredicates.Undefined
+		return false
 	for value in values
 		return breakState if (predicate value) is breakState
 	return not breakState

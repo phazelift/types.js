@@ -57,6 +57,9 @@
       values = [];
     }
     if (values.length < 1) {
+      if (predicate === typesPredicates.Undefined) {
+        return true;
+      }
       return false;
     }
     for (_i = 0, _len = values.length; _i < _len; _i++) {
