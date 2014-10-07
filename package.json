@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A tiny Javascript type-check library",
   "main": "types.min.js",
   "scripts": {

@@ -100,7 +100,7 @@
       return value instanceof Date;
     },
     'Object': function(value) {
-      return (typeof value === 'object') && !(value instanceof Array) && !(value instanceof RegExp) && !(value === null);
+      return (typeof value === 'object') && !(value instanceof Array) && !(value instanceof RegExp) && !(value instanceof Date) && !(value === null);
     },
     'NaN': function(value) {
       return (typeof value === 'number') && (value !== value);

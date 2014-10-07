@@ -68,7 +68,7 @@ typesPredicates=
 	'Array'			: (value) -> (typeof value is 'object') and ( value instanceof Array )
 	'RegExp'			: (value) -> value instanceof RegExp
 	'Date'			: (value) -> value instanceof Date
-	'Object'			: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value is null)
+	'Object'			: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value instanceof Date) and not (value is null)
 	'NaN'				: (value) -> (typeof value is 'number') and (value isnt value)
 
 typesPredicates.StringOrNumber= (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
