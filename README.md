@@ -7,8 +7,8 @@ Especially in non-typed scripting languages like Javascript, proper manual type 
 Because type checking in Javascript is so confusing and contradictory sometimes, I decided to make a
 definitive library for myself, with for me understandable standards.
 
-`(NaN !== NaN) == true` still freakes me out, I just don't like to see that kind of stuff in my code.
-With types.js I can now test NaN with: `Types.isNaN(NaN)` or `Types.typeof( parseInt('Not A Number!') ) === 'nan'`,
+Standard Javascript `(NaN !== NaN) == true` still freakes me out, I just don't like to see that kind of stuff in
+my code. With types.js I can now test NaN with: `Types.isNaN(NaN)` or `Types.typeof( parseInt('Not A Number!') ) === 'nan'`,
 both will return true.
 
 Object is another one; `typeof ['array']` renders `'object'`, even in strict mode. So if we want to know
@@ -46,13 +46,14 @@ ___
 var _= Types;									// browser
 var _= require( 'types.js' );					// in node.js with npm
 
-_.forceString();								// (empty String)
-_.forceString( null, 'ok' );					// ok (as String)
-_.forceString( null, [1, 2, 3] );				// (empty String (== default literal) )
-_.forceString(33);								// 33 (as String)
-_.forceNumber('35px');							// 35 (as Number)
-_.forceNumber( true, function(){} );			// 0 (as Number)
-_.forceBoolean('35px');							// false (as Boolean)
+var x;
+x= _.forceString();								// (empty String)
+x= _.forceString( null, 'ok' );					// ok (as String)
+x= _.forceString( null, [1, 2, 3] );			// (empty String (== default literal) )
+x= _.forceString(33);							// 33 (as String)
+x= _.forceNumber('35px');						// 35 (as Number)
+x= _.forceNumber( true, function(){} );			// 0 (as Number)
+x= _.forceBoolean('35px');						// false (as Boolean)
 
 MyObject= function( data ){
 	this.data= _.forceString( data );			// (empty string if data is not of type string or number)
@@ -65,36 +66,36 @@ _.forceFunction( invalidMethod, function(){
 	return 'replacement function used.';
  })();											// replacement function used
 
- _.forceFunction( invalidMethod, /regexp/ )();	// (default empty/nop function is called)
+ x= _.forceFunction( invalidMethod, /regexp/ )();	// (default empty/nop function is called)
 
-_.isString( 'Hello types.js!' );				// true
-_.isString( 23456 );							// false
-_.isBoolean( false );							// true
-_.isArray( [1,2,3] );							// true
-_.isObject( [1,2,3] );							// false
-_.isObject( /myRegExp/g );						// false
-_.isNaN( parseInt('generate NaN') );			// true
+x= _.isString( 'Hello types.js!' );				// true
+x= _.isString( 23456 );							// false
+x= _.isBoolean( false );						// true
+x= _.isArray( [1,2,3] );						// true
+x= _.isObject( [1,2,3] );						// false
+x= _.isObject( /myRegExp/g );					// false
+x= _.isNaN( parseInt('generate NaN') );			// true
 
-_.notNull('');									// true
-_.notUndefined( undefined );					// false
+x= _.notNull('');								// true
+x= _.notUndefined( undefined );					// false
 
-_.allString( '', " ", 'with text' );					// true
-_.allString( '', ' ', 'with text', 123 );				// false
-_.allStringOrNumber( '', ' ', 'with text', 123 );		// true
-_.allObject( { key: 'nice' }, [], /regexp/ig );			// false
-_.allArray( [1,2,3], [{}], new RegExp('stop') );		// false
-_.allArray( [1,2,3], [{}], [false, true] );				// true
+x= _.allString( '', " ", 'with text' );						// true
+x= _.allString( '', ' ', 'with text', 123 );				// false
+x= _.allStringOrNumber( '', ' ', 'with text', 123 );		// true
+x= _.allObject( { key: 'nice' }, [], /regexp/ig );			// false
+x= _.allArray( [1,2,3], [{}], new RegExp('stop') );			// false
+x= _.allArray( [1,2,3], [{}], [false, true] );				// true
 
-_.hasString( 123, { value: 'nice' }, ['?'] );			// false
-_.hasStringOrNumber( [1,2], /reg/, 'true' )				// true
-_.hasFunction( 123, { value: 'nice' }, function(){} );	// true
-_.hasUndefined( 'render false!', 123, null );			// false
-_.hasUndefined( 'render true!', 123, undefined );		// true
+x= _.hasString( 123, { value: 'nice' }, ['?'] );			// false
+x= _.hasStringOrNumber( [1,2], /reg/, 'true' )				// true
+x= _.hasFunction( 123, { value: 'nice' }, function(){} );	// true
+x= _.hasUndefined( 'render false!', 123, null );			// false
+x= _.hasUndefined( 'render true!', 123, undefined );		// true
 
-_.typeof( [1,2,3] );									// 'array'
-_.typeof( null );										// 'null'
-_.typeof( parseInt('generate NaN') );					// 'nan'
-_.typeof( new Date() );									// 'date'
+x= _.typeof( [1,2,3] );										// 'array'
+x= _.typeof( null );										// 'null'
+x= _.typeof( parseInt('generate NaN') );					// 'nan'
+x= _.typeof( new Date() );									// 'date'
 // etc..
 ```
 ___
@@ -112,6 +113,10 @@ API
 > Returns value if value is of type Boolean. Otherwise it will try to convert value to be a Boolean. If that
 > fails too, replacement will be tested for, or converted to, 'boolean' if possible. If that fails, the default
 > types.js boolean literal is returned: a Boolean `false`
+
+**Types.forceString** **Types.forceNumber** **Types.forceArray** **Types.forceObject** **Types.forceFunction**
+> Just like forceBoolean, only applying the type denoted by the method name. See the forceType literals for
+> the different methods below.
 
 **Types.typeof**
 > `<String> Types.typeof( value )`
@@ -163,16 +168,12 @@ ____________________________
 'boolean', 'string', 'number', 'object', 'array', 'function', 'regexp', 'date', 'null', 'undefined', 'nan', 'unknown'
 
 ____________________________
-**force'Type' and default literals**
+**force'Type' method and default literals**
 
-> format: `<string> forceString( <any type> value, <string> replacement )`
+> format: `<'Type'> force'Type'( <any type> value, <'Type'> replacement )`
+<br/><br/>
+> The literals returned by default:
 
-forceBoolean	|forceString	|forceNumber
----------------|--------------|--------------
-Boolean `false`|String `''`	|Number `0`
-
-forceObject		|forceArray		|forceFunction
----------------|--------------|--------------
-Object `{}`		|Array `[]`		|Function `function(){}`
-
-___
+forceBoolean	|forceString	|forceNumber	|forceObject		|forceArray		|forceFunction
+---------------|--------------|--------------|---------------|--------------|--------------
+`false`			|`''`				|`0`				|`{}`				|`[]`				|`function(){}`
