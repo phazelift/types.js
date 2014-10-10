@@ -94,10 +94,10 @@
       return (typeof value === 'object') && (value instanceof Array);
     },
     'RegExp': function(value) {
-      return value instanceof RegExp;
+      return (typeof value === 'object') && (value instanceof RegExp);
     },
     'Date': function(value) {
-      return value instanceof Date;
+      return (typeof value === 'object') && (value instanceof Date);
     },
     'Object': function(value) {
       return (typeof value === 'object') && !(value instanceof Array) && !(value instanceof RegExp) && !(value instanceof Date) && !(value === null);

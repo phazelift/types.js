@@ -65,9 +65,9 @@ typesPredicates=
 	'String'			: (value) -> typeof value is 'string'
 	'Function'		: (value) -> typeof value is 'function'
 	'Number'			: (value) -> (typeof value is 'number') and (value is value)
-	'Array'			: (value) -> (typeof value is 'object') and ( value instanceof Array )
-	'RegExp'			: (value) -> value instanceof RegExp
-	'Date'			: (value) -> value instanceof Date
+	'Array'			: (value) -> (typeof value is 'object') and (value instanceof Array)
+	'RegExp'			: (value) -> (typeof value is 'object') and (value instanceof RegExp)
+	'Date'			: (value) -> (typeof value is 'object') and (value instanceof Date)
 	'Object'			: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value instanceof Date) and not (value is null)
 	'NaN'				: (value) -> (typeof value is 'number') and (value isnt value)
 

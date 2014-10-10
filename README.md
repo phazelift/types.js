@@ -5,19 +5,18 @@ A tiny (1.7kb), but essential Javascript type checking library.
 
 Especially in non-typed scripting languages like Javascript, proper manual type checking is crucial.
 Because type checking in Javascript is so confusing and contradictory sometimes, I decided to make a
-definitive library for myself, with for me understandable standards.
+definitive library for myself, with for me understandable/useful standards.
 
-Standard Javascript `(NaN !== NaN) == true` still freakes me out, I just don't like to see that kind of stuff in
-my code. With types.js I can now test NaN with: `Types.isNaN(NaN)` or `Types.typeof( parseInt('Not A Number!') ) === 'nan'`,
-both will return true.
+Standard Javascript `(NaN !== NaN) == true` still freakes me out, I just don't like it. With types.js I can now
+test NaN with: `Types.isNaN(NaN)` or `Types.typeof( parseInt('Not A Number!') ) === 'nan'`, both will return true.
 
-Object is another one; `typeof ['array']` renders `'object'`, even in strict mode. So if we want to know
-if some input is an `'object'`, we are constantly fooled by `typeof` returning `'object'` for `[]`, `null`
-and `/regexp/`. With types.js the latter returns `'array'`, `'null'` and `'regexp'` respectively.
+Object is another one; `typeof ['array']` renders `'object'` in standard JS. So if we want to know if some input
+is a 'real Object', we are constantly fooled by `typeof` returning `'object'` for `[]`, `null` and `/regexp/`.
+With types.js the latter returns `'array'`, `'null'` and `'regexp'` respectively.
 
 Be careful with using types.js for variables created with `new Number()` or other non-literal instantiations. No
-support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an object
-where you can add stuff to.
+support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an
+object where you can add stuff to.
 
 I've added support for multiple arguments so we can test for multiple values in one call. For save variable
 instantiation/usage or save function calls I added forceType, ideal for testing a value and setting it (or a replacement)
