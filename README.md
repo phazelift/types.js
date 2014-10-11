@@ -59,7 +59,7 @@ x= _.forceBoolean('35px');						// false (as Boolean)
 
 // initialize your object:
 Client= function( name ){
-	// if name is not set or not String, this.name will be set to: 'no name given'
+	// if name is not set or not String, this.name will be set to: 'no name given yet'
 	this.name= _.forceString( name, 'no name given yet' );
 }
 var unborn= new Client();
