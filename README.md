@@ -60,17 +60,19 @@ x= _.forceBoolean('35px');						// false (as Boolean)
 // initialize your object:
 Client= function( name ){
 	// if name is not set or not String, this.name will be set to: 'no name given'
-	this.name= _.forceString( name, 'no name given' );
+	this.name= _.forceString( name, 'no name given yet' );
 }
+var unborn= new Client();
 
-var invalidMethod= null;
+var func= null;
 // call a function that might not exist anymore:
-_.forceFunction( invalidMethod )();				// default empty function is called, returns undefined
+_.forceFunction( func )( funcArgs );
+// no crash, default empty function is called, returns undefined
 
 // or add a replacement function in case the first one fails:
-_.forceFunction( invalidMethod, function(){
-	return 'replacement function used.';
- })();											// replacement function used
+_.forceFunction( func, function(){
+	return 'replacement function used';
+ })( funcArgs );
 
 // some default type checking:
 x= _.isString( 'Hello types.js!' );				// true
