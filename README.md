@@ -10,7 +10,7 @@ definitive library for myself, with for me understandable/useful standards.
 Standard Javascript `(NaN !== NaN) == true` still freakes me out, I just don't like it. With types.js I can now
 test NaN with: `Types.isNaN(NaN)` or `Types.typeof( parseInt('Not A Number!') ) === 'nan'`, both will return true.
 
-Object is another one; `typeof ['array']` renders `'object'` in standard JS. So if we want to know if some input
+Another one; `typeof ['array']` renders `'object'` in standard JS. So if we want to know if some input
 is a 'real Object', we are constantly fooled by `typeof` returning `'object'` for `[]`, `null` and `/regexp/`.
 With types.js the latter returns `'array'`, `'null'` and `'regexp'` respectively.
 
@@ -18,9 +18,11 @@ Be careful with using types.js for variables created with `new Number()` or othe
 support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an
 object where you can add stuff to.
 
-I've added support for multiple arguments so we can test for multiple values in one call. For save variable
-instantiation/usage or save function calls I added forceType, ideal for testing a value and setting it (or a replacement)
-to a variable in a definite type, in one statement.
+Force!
+------
+For save variable instantiation/usage, or save function calls, I added force'Type'. Ideal for testing a value and setting
+it (or a replacement) to a variable, in a definite type, in one statement; check it out, it's sweet! I added force to types.js
+because I use it all the time and it seems to belong in here.
 ___
 For use with node.js you can install with `npm install types.js`
 ___
@@ -45,28 +47,32 @@ ___
 var _= Types;									// browser
 var _= require( 'types.js' );					// in node.js with npm
 
+// initialize a variable and be sure what type it will have in any case:
 var x;
 x= _.forceString();								// (empty String)
 x= _.forceString( null, 'ok' );					// ok (as String)
-x= _.forceString( null, [1, 2, 3] );			// (empty String (== default literal) )
+x= _.forceString( null, [1, 2, 3] );			// (empty String)
 x= _.forceString(33);							// 33 (as String)
 x= _.forceNumber('35px');						// 35 (as Number)
 x= _.forceNumber( true, function(){} );			// 0 (as Number)
 x= _.forceBoolean('35px');						// false (as Boolean)
 
-MyObject= function( data ){
-	this.data= _.forceString( data );			// (empty string if data is not of type string or number)
-	// or
-	this.data= _.forceString( data, 'default init');	// default init
+// initialize your object:
+Client= function( name ){
+	// if name is not set or not String, this.name will be set to: 'no name given'
+	this.name= _.forceString( name, 'no name given' );
 }
 
 var invalidMethod= null;
+// call a function that might not exist anymore:
+_.forceFunction( invalidMethod )();				// default empty function is called, returns undefined
+
+// or add a replacement function in case the first one fails:
 _.forceFunction( invalidMethod, function(){
 	return 'replacement function used.';
  })();											// replacement function used
 
- x= _.forceFunction( invalidMethod, /regexp/ )();	// (default empty/nop function is called)
-
+// some default type checking:
 x= _.isString( 'Hello types.js!' );				// true
 x= _.isString( 23456 );							// false
 x= _.isBoolean( false );						// true
@@ -78,6 +84,7 @@ x= _.isNaN( parseInt('generate NaN') );			// true
 x= _.notNull('');								// true
 x= _.notUndefined( undefined );					// false
 
+// check multiple values in one call:
 x= _.allString( '', " ", 'with text' );						// true
 x= _.allString( '', ' ', 'with text', 123 );				// false
 x= _.allStringOrNumber( '', ' ', 'with text', 123 );		// true
@@ -91,6 +98,7 @@ x= _.hasFunction( 123, { value: 'nice' }, function(){} );	// true
 x= _.hasUndefined( 'render false!', 123, null );			// false
 x= _.hasUndefined( 'render true!', 123, undefined );		// true
 
+// check for a types.js type definition, returns lowercase string:
 x= _.typeof( [1,2,3] );										// 'array'
 x= _.typeof( null );										// 'null'
 x= _.typeof( parseInt('generate NaN') );					// 'nan'
@@ -113,9 +121,20 @@ API
 > fails too, replacement will be tested for, or converted to, 'boolean' if possible. If that fails, the default
 > types.js boolean literal is returned: a Boolean `false`
 
-**Types.forceString** **Types.forceNumber** **Types.forceArray** **Types.forceObject** **Types.forceFunction**
-> Just like forceBoolean, only applying the type denoted by the method name. See the forceType literals for
+**Types.forceString**, **Types.forceNumber**, **Types.forceArray**, **Types.forceObject**
+
+> Just like forceBoolean, only applying the type denoted by the method name. See the force'Type' literals for
 > the different methods below.
+
+**Types.forceFunction**
+> `<Function> Types.forceFunction( <Function> func, <Function> replacement )`
+
+> Returns func if it is a Function. So you can call your function with Types.forceFunction(func)( args ). If it is
+> a Function, it will call and pass the given arguments.
+
+> forceFunction will not try/catch func for other failures.
+
+> If func or replacement are not of type Function, a dummy function will be called returning undefined.
 
 **Types.typeof**
 > `<String> Types.typeof( value )`

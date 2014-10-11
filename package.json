@@ -1,7 +1,7 @@
 {
   "name": "types.js",
-  "version": "1.2.5",
-  "description": "A tiny Javascript type-check library",
+  "version": "1.2.6",
+  "description": "A tiny (1.7kb), but essential Javascript type-check library",
   "main": "types.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
