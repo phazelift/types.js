@@ -38,12 +38,12 @@ createForce= ( type ) ->
 		switch type
 			when 'Number' then return value if Types.notNaN value= parseInt value, Types.parseIntBase
 			when 'String' then return value+ '' if Types.isStringOrNumber value
-			else return value if Types.typeof( value ) is type.toLowerCase()
+			else return value if Types[ 'is'+ type ] value
 		return false
 
 	# the actual forctType method, returns the type's literal, if both value and replacement are not of, or convertible to, type
 	return ( value, replacement= value ) ->
-		return value if Types[ 'is'+ type ] value
+		return value if false isnt value= convertType value
 		return replacement if false isnt replacement= convertType replacement
 		return literals[ type ]
 

@@ -2157,9 +2157,9 @@ describe("forceString( value )", function() {
     });
 
 
-    it("should return the value of the second argument as a String(if it is a String), when the first argument is not a String", function(){
+    it("should return the value of the second argument as a String(if it is a String), when the first argument is not a String or Number", function(){
 
-        result= Types.forceString( 0, 'true' );
+        result= Types.forceString( {}, 'true' );
         expect( result ).toBe( 'true' );
 
         result= Types.forceString( /false/, 'ok' );
@@ -2167,9 +2167,6 @@ describe("forceString( value )", function() {
 
         result= Types.forceString( [], 'abc' );
         expect( result ).toBe( 'abc' );
-
-        result= Types.forceString( 0, '' );
-        expect( result ).toBe( '' );
 
         result= Types.forceString( function(){ return true; }, 'string' );
         expect( result ).toBe( 'string' );

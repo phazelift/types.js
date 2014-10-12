@@ -31,7 +31,7 @@
           }
           break;
         default:
-          if (Types["typeof"](value) === type.toLowerCase()) {
+          if (Types['is' + type](value)) {
             return value;
           }
       }
@@ -41,7 +41,7 @@
       if (replacement == null) {
         replacement = value;
       }
-      if (Types['is' + type](value)) {
+      if (false !== (value = convertType(value))) {
         return value;
       }
       if (false !== (replacement = convertType(replacement))) {
