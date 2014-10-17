@@ -58,9 +58,9 @@ x= _.forceNumber( true, function(){} );			// 0 (as Number)
 x= _.forceBoolean('35px');						// false (as Boolean)
 
 // initialize your object:
-Client= function( name ){
+var Client= function( name ){
 	this.name= _.forceString( name, 'no name given yet' );
-}
+};
 var unborn= new Client();
 console.log( unborn.name );						// 'no name given yet'
 

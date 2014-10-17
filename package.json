@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "1.2.8",
+  "version": "1.3.0",
   "description": "A tiny (1.7kb), but essential Javascript type-check library",
   "main": "types.min.js",
   "scripts": {
@@ -16,7 +16,6 @@
     "types",
     "validation",
     "check",
-    "validation",
     "force"
   ],
   "author": "Dennis Raymondo <phazelift@gmail.com> (https://github.com/phazelift/)",
