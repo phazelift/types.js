@@ -59,6 +59,7 @@ testValues= ( predicate, breakState, values= [] ) ->
 	return not breakState
 
 typesPredicates=
+	'Defined'		: (value) -> value isnt undefined
 	'Undefined'		: (value) -> value is undefined
 	'Null'			: (value) -> value is null
 	'Boolean'		: (value) -> typeof value is 'boolean'

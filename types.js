@@ -72,6 +72,9 @@
   };
 
   typesPredicates = {
+    'Defined': function(value) {
+      return value !== void 0;
+    },
     'Undefined': function(value) {
       return value === void 0;
     },

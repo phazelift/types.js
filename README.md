@@ -47,8 +47,8 @@ ___
 var _= Types;									// browser
 var _= require( 'types.js' );					// in node.js with npm
 
-// initialize a variable and be sure what type it will have in any case:
 var x;
+// initialize a variable and be sure what type it will have in any case:
 x= _.forceString();								// (empty String)
 x= _.forceString( null, 'ok' );					// ok (as String)
 x= _.forceString( null, [1, 2, 3] );			// (empty String)
@@ -87,6 +87,7 @@ x= _.isNaN( parseInt('generate NaN') );			// true
 
 x= _.notNull('');								// true
 x= _.notUndefined( undefined );					// false
+x= _.isDefined( null );							// true
 
 // check multiple values in one call:
 x= _.allString( '', " ", 'with text' );						// true
@@ -182,6 +183,7 @@ notRegexp			|isRegexp			|hasRegexp			|allRegexp
 notDate				|isDate				|hasDate				|allDate
 notNull				|isNull				|hasNull				|allNull
 notUndefined		|isUndefined		|hasUndefined		|allUndefined
+notDefined			|isDefined			|hasDefined			|allDefined
 notNaN				|isNaN				|hasNaN				|allNaN
 
 ____________________________
@@ -199,3 +201,15 @@ ____________________________
 forceBoolean	|forceString	|forceNumber	|forceObject		|forceArray		|forceFunction
 ---------------|--------------|--------------|---------------|--------------|--------------
 `false`			|`''`				|`0`				|`{}`				|`[]`				|`function(){}`
+
+change log
+==========
+
+1.3.1
+
+Added:
+- change log in the readme, more convenient overview of changes.
+
+- is/not/has/allDefined<br/>
+Now you can: `if (_.isDefined(value) )`<br/>
+instead of `if (_.notUndefined(value) )`
