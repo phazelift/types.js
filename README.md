@@ -4,25 +4,45 @@ types.js
 A tiny (1.7kb), but essential Javascript type checking library.
 
 Especially in non-typed scripting languages like Javascript, proper manual type checking is crucial.
-Because type checking in Javascript is so confusing and contradictory sometimes, I decided to make a
-definitive library for myself, with for me understandable/useful standards.
+Because type checking in Javascript is such a mess, I decided to make a library with clear standards
+I can build upon.
 
-Standard Javascript `(NaN !== NaN) == true` still freakes me out, I just don't like it. With types.js I can now
-test NaN with: `Types.isNaN(NaN)` or `Types.typeof( parseInt('Not A Number!') ) === 'nan'`, both will return true.
+Standard Javascript `(NaN == NaN) == false` still freakes me out, it's so wrong..<br/>
+You cannot add to `NaN`, that's logical. But if `(typof NaN == 'number')` how can we know if our value is a number?<br/>
+Well: `(value == value)`, because `(NaN != NaN)`, omg! I refuse to have this in my code, except for this library!
 
-Another one; `typeof ['array']` renders `'object'` in standard JS. So if we want to know if some input
-is a 'real Object', we are constantly fooled by `typeof` returning `'object'` for `[]`, `null` and `/regexp/`.
-With types.js the latter returns `'array'`, `'null'` and `'regexp'` respectively.
-
-Be careful with using types.js for variables created with `new Number()` or other non-literal instantiations. No
-support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an
-object where you can add stuff to.
-
+With types.js:
+```javascript
+_.typeof( parseInt('Not A Number!') )	// 'nan'
+_.typeof( [] );							// 'array'
+_.typeof( null );						// 'null'
+_.typeof( /someregexp/ );				// 'regexp'
+// there is much more! see below.
+```
 Force!
 ------
-For save variable instantiation/usage, or save function calls, I added force'Type'. Ideal for testing a value and setting
-it (or a replacement) to a variable, in a definite type, in one statement; check it out, it's sweet! I added force to types.js
-because I use it all the time and it seems to belong in here.
+Force some value to be of some type. A replacement value can be given in case value is invalid, without replacement
+a default literal of the forced type will be returned.
+```javascript
+var left= '500px';
+var callback= null;
+// now some 10 lines of code to be save:
+if ( typeof left === 'string' ){
+		left= parseInt( left, 10 );
+}
+if ( left !== left || typeof left !== 'number' )
+	left= 100;
+}
+if ( typeof callback !== 'function' ){
+	callback= function(){}
+}
+callback( left );
+// only 2 lines of code with force!
+left=  _.forceNumber( left, 100 );
+_.forceFunction( callback )( left );
+// see below for more examples
+```
+Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
 ___
 For use with node.js you can install with `npm install types.js`
 ___
@@ -40,6 +60,9 @@ Basic usage:
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
 
+Be careful with using types.js for variables created with `new Number()` or other non-literal instantiations. No
+support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an
+object where you can add stuff to.
 ___
 
 **some examples:**
