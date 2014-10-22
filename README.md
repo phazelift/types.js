@@ -7,10 +7,6 @@ Especially in non-typed scripting languages like Javascript, proper manual type 
 Because type checking in Javascript is such a mess, I decided to make a library with clear standards
 I can build upon.
 
-Standard Javascript `(NaN == NaN) == false` still freakes me out, it's so wrong..<br/>
-You cannot add to `NaN`, that's logical. But if `(typof NaN == 'number')` how can we know if our value is a number?<br/>
-Well: `(value == value)`, because `(NaN != NaN)`, omg! I refuse to have this in my code, except for this library!
-
 With types.js:
 ```javascript
 _.typeof( parseInt('Not A Number!') )	// 'nan'
@@ -30,6 +26,7 @@ var callback= null;
 if ( typeof left === 'string' ){
 		left= parseInt( left, 10 );
 }
+// check if parseInt returned NaN..
 if ( left !== left || typeof left !== 'number' )
 	left= 100;
 }
