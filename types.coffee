@@ -17,6 +17,14 @@
 
 "use strict"
 
+# I refactored types.js quite a bit to make it smaller and faster, at the cost of readability.
+
+# create a Number to work with, and attach .void so you can test before fetching
+emptyNumber= ->
+	number= new Number
+	number.void= true
+	return number
+
 Types=
 	# used by forceNumber to set the Radix, defaults to decimals
 	parseIntBase: 10
@@ -25,7 +33,7 @@ Types=
 literals=
 	'Boolean'	: false
 	'String'		: ''
-	'Number'		: 0
+	'Number'		: emptyNumber()
 	'Object'		: {}
 	'Array'		: []
 	'Function'	: ->
@@ -36,13 +44,13 @@ createForce= ( type ) ->
 	# will try to convert value in case initial type test failed. failed conversion returns false
 	convertType= ( value ) ->
 		switch type
-			when 'Number' then return value if Types.notNaN value= parseInt value, Types.parseIntBase
+			when 'Number' then return value if Types.isNumber value= parseInt value, Types.parseIntBase
 			when 'String' then return value+ '' if Types.isStringOrNumber value
 			else return value if Types[ 'is'+ type ] value
 		return false
 
 	# the actual forctType method, returns the type's literal, if both value and replacement are not of, or convertible to, type
-	return ( value, replacement= value ) ->
+	return ( value, replacement ) ->
 		return value if false isnt value= convertType value
 		return replacement if false isnt replacement= convertType replacement
 		return literals[ type ]
@@ -59,18 +67,18 @@ testValues= ( predicate, breakState, values= [] ) ->
 	return not breakState
 
 typesPredicates=
-	'Defined'		: (value) -> value isnt undefined
 	'Undefined'		: (value) -> value is undefined
 	'Null'			: (value) -> value is null
 	'Boolean'		: (value) -> typeof value is 'boolean'
 	'String'			: (value) -> typeof value is 'string'
 	'Function'		: (value) -> typeof value is 'function'
-	'Number'			: (value) -> (typeof value is 'number') and (value is value)
+	'Number'			: (value) -> (typeof value is 'number') and (value is value) or ( (typeof value is 'object') and (value instanceof Number) and value.void )
 	'Array'			: (value) -> (typeof value is 'object') and (value instanceof Array)
 	'RegExp'			: (value) -> (typeof value is 'object') and (value instanceof RegExp)
 	'Date'			: (value) -> (typeof value is 'object') and (value instanceof Date)
-	'Object'			: (value) -> (typeof value is 'object') and not (value instanceof Array) and not (value instanceof RegExp) and not (value instanceof Date) and not (value is null)
+	'Object'			: (value) -> (typeof value is 'object') and (value isnt null) and not (value instanceof Array) and not (value instanceof RegExp) and not (value instanceof Date)
 	'NaN'				: (value) -> (typeof value is 'number') and (value isnt value)
+	'Defined'		: (value) -> value isnt undefined
 
 typesPredicates.StringOrNumber= (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
 

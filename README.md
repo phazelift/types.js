@@ -1,18 +1,21 @@
 types.js
 ========
 <br/>
-A tiny (1.7kb), but essential Javascript type checking library.
+A tiny (1.8kb), but essential Javascript type checking library.
 
 Especially in non-typed scripting languages like Javascript, proper manual type checking is crucial.
 Because type checking in Javascript is such a mess, I decided to make a library with clear standards
 I can build upon.
 
-With types.js:
+A few quick examples with types.js:
 ```javascript
-_.typeof( parseInt('Not A Number!') )	// 'nan'
 _.typeof( [] );							// 'array'
 _.typeof( null );						// 'null'
 _.typeof( /someregexp/ );				// 'regexp'
+_.typeof( parseInt('Not A Number!') );	// 'nan'
+_.forceString( 123 );					// '123'
+_.allDefined( 'good', false, null );	// true (null !== undefined in strict mode)
+_.hasObject( 'not', 'really' );			// false
 // there is much more! see below.
 ```
 Force!
@@ -34,7 +37,7 @@ if ( typeof callback !== 'function' ){
 	callback= function(){}
 }
 callback( left );
-// only 2 lines of code with force!
+// 2 lines of code with force, and a better read if you ask me:
 left=  _.forceNumber( left, 100 );
 _.forceFunction( callback )( left );
 // see below for more examples
@@ -56,10 +59,6 @@ Basic usage:
 **hasString** (and the other has-types) are useful for checking if one or more arguments are of a certain type.
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
-
-Be careful with using types.js for variables created with `new Number()` or other non-literal instantiations. No
-support for them, because I don't want to get `'number'` on `Types.typeof( new Number(10) )`, as it actually is an
-object where you can add stuff to.
 ___
 
 **some examples:**
@@ -146,10 +145,21 @@ API
 > fails too, replacement will be tested for, or converted to, 'boolean' if possible. If that fails, the default
 > types.js boolean literal is returned: a Boolean `false`
 
-**Types.forceString**, **Types.forceNumber**, **Types.forceArray**, **Types.forceObject**
+**Types.forceString**, **Types.forceArray**, **Types.forceObject**
 
 > Just like forceBoolean, only applying the type denoted by the method name. See the force'Type' literals for
 > the different methods below.
+
+**Types.forceNumber**
+> `<Number> forceNumber( <String>/<Number> value, <String>/<Number> replacement )`
+
+> Returns value if it is a Number or convertable to a Number. Returns replacement if value is invalid or not convertable.
+> Returns a Number object with a .void property set to true if no valid value and replacement were given or no conversion was possible.
+
+> You can check yourNumber.void to see if yourNumber is set to a valid number. If .void is true, yourNumber is not set to a
+> number, but to a Number object which is ready for mathemetical operation, and defaults to 0.
+
+> `Types.typeof( Types.forceNumber() );` returns 'number', as it is a Number and you can use it as number.
 
 **Types.forceFunction**
 > `<Function> Types.forceFunction( <Function> func, <Function> replacement )`
@@ -225,6 +235,43 @@ forceBoolean	|forceString	|forceNumber	|forceObject		|forceArray		|forceFunction
 change log
 ==========
 
+1.3.5
+
+Changed:
+-	forceNumber doesn't return 0 by default anymore. It now returns a Number object with a .void property which is set to
+	true if no valid Number was given or no conversion was possible.
+
+	I made this change because I wanted to be able to check if forceNumber was successful. Just a 0 can be very misleading and
+	a source for bugs. NaN is a failure IMO, so I made a kind of replacement feature in forceNumber.
+
+	You can now check for yourNumber.void to see if it is set. If .void is true, yourNumber is a Number object which is ready for
+	mathemetical operation, and defaults to 0, this in contrast with NaN, which is almost totally unusable.
+
+	example:
+	```javascript
+	// generate a void Number:
+	var nr= forceNumber();
+	console.log( nr.void );
+	// true
+	// don't do the following after a forceNumber without a valid replacement:
+	console.log( nr );
+	// { void: true }
+	// instead do what cannot be done with NaN:
+	console.log( 0 + nr );
+	// 0
+	// or check before usage:
+	( nr.void )
+		? console.log( 'void?', nr+= 36/ 4 );
+		: console.log( nr );
+	// void? 9
+	etc..
+	```
+
+Updated:
+-	Jasmine tests for forceNumber and isDefined
+-	speed optimization for isObject
+
+---------------------------------------------------
 1.3.1
 
 Added:

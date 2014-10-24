@@ -1,7 +1,172 @@
 //
-// some Jasmine tests for types.js
+// Jasmine tests for types.js
 //
 
+
+describe("forceNumber(value, replacement)", function() {
+
+  it("should be able to do mathemetical operations with a emptyNumber", function(){
+
+    result= Types.forceNumber();
+    result+= 10;
+    expect( result ).toBe( 10 );
+
+    result= Types.forceNumber();
+    result-= 10;
+    expect( result ).toBe( -10 );
+
+    result= Types.forceNumber();
+    result*= 10;
+    expect( result ).toBe( 0 );
+
+    result= Types.forceNumber();
+    ++result;
+    expect( result ).toBe( 1 );
+
+    result= Types.forceNumber();
+    result+= 0;
+    expect( result ).toBe( 0 );
+
+  });
+});
+
+
+
+describe("forceNumber(value, replacement)", function() {
+
+  it("should return a normal typeof 'number' if value or replacement is valid", function(){
+
+    result= typeof Types.forceNumber( 0 );
+    expect( result ).toBe( 'number' );
+
+    result= typeof Types.forceNumber( 'abc', 0 );
+    expect( result ).toBe( 'number' );
+
+    result= typeof Types.forceNumber( 'not a number', '123 parsable' );
+    expect( result ).toBe( 'number' );
+
+    result= typeof Types.forceNumber( {}, 10 );
+    expect( result ).toBe( 'number' );
+
+    result= typeof Types.forceNumber( null, '123' );
+    expect( result ).toBe( 'number' );
+
+    result= typeof Types.forceNumber( '123abc', 0 );
+    expect( result ).toBe( 'number' );
+
+  });
+});
+
+
+describe("forceNumber(value, replacement)", function() {
+
+  it("should return a Number object with .void property set to true if no valid argument is given", function(){
+
+    result= Types.forceNumber().void;
+    expect( result ).toBe( true );
+
+    result= Types.forceNumber( undefined, null ).void;
+    expect( result ).toBe( true );
+
+    result= Types.forceNumber( 'not a number', false ).void;
+    expect( result ).toBe( true );
+
+    result= Types.forceNumber( {}, {} ).void;
+    expect( result ).toBe( true );
+
+    result= Types.forceNumber( [], NaN ).void;
+    expect( result ).toBe( true );
+
+    result= Types.forceNumber( new Date, new Date ).void;
+    expect( result ).toBe( true );
+
+    result= Types.forceNumber( null, true ).void;
+    expect( result ).toBe( true );
+
+  });
+});
+
+
+describe("forceNumber(value, replacement)", function() {
+
+  it("should always return a types.js number type", function(){
+
+    result= Types.typeof( Types.forceNumber() );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( undefined ) );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( undefined, 30 ) );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( undefined, null ) );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( undefined, [] ) );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( undefined, new Date ) );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( {}, false ) );
+    expect( result ).toBe( 'number' );
+
+    result= Types.typeof( Types.forceNumber( true, 'asdf' ) );
+    expect( result ).toBe( 'number' );
+
+  });
+});
+
+
+describe("isDefined( value )", function() {
+
+  it("should return false if value is undefined or no argument is given", function(){
+
+    var undef= undefined;
+
+    result= Types.isDefined( undef );
+    expect( result ).toBe( false );
+
+    result= Types.isDefined();
+    expect( result ).toBe( false );
+
+    result= Types.isDefined( undefined );
+    expect( result ).toBe( false );
+
+  });
+});
+
+describe("isDefined( value )", function() {
+
+  it("should return true for any argument given that is not undefined", function(){
+
+    result= Types.isDefined( null );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( '' );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( false );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( true );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( new Object );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( {} );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( [] );
+    expect( result ).toBe( true );
+
+    result= Types.isDefined( /bla/ );
+    expect( result ).toBe( true );
+
+  });
+});
 
 describe("isBoolean( value )", function() {
 
@@ -1676,7 +1841,7 @@ describe("allNumber( value, [value1, ..., valueN] )", function() {
     result= Types.allNumber( 1, 2, 3, undefined, 4, 5 );
     expect( result ).toBe( false );
 
-    result= Types.allNumber( new Number(), 44, 88, 22 );
+    result= Types.allNumber( new Object, 44, 88, 22 );
     expect( result ).toBe( false );
 
     result= Types.allNumber( NaN, 0 );
@@ -2186,37 +2351,37 @@ describe("forceNumber( value )", function() {
 
     it("should return a Number type value, or the Number 0, when only one(or no) argument of any type is given", function(){
 
-        result= typeof Types.forceNumber( true );
+        result= Types.typeof( Types.forceNumber(true) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( '' );
+        result= Types.typeof( Types.forceNumber('') );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( 'true' );
+        result= Types.typeof( Types.forceNumber('true') );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( 0 );
+        result= Types.typeof( Types.forceNumber(0) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( 10 + 10 );
+        result= Types.typeof( Types.forceNumber(10 + 10) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( function(){ return true; } );
+        result= Types.typeof( Types.forceNumber(function(){ return true; }) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( null );
+        result= Types.typeof( Types.forceNumber(null) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( NaN );
+        result= Types.typeof( Types.forceNumber(NaN) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( new Number() );
+        result= Types.typeof( Types.forceNumber(new Number()) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( undefined );
+        result= Types.typeof( Types.forceNumber(undefined) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber();
+        result= Types.typeof( Types.forceNumber() );
         expect( result ).toBe( 'number' );
 
       });
@@ -2224,78 +2389,66 @@ describe("forceNumber( value )", function() {
 
     it("should return a Number type value when two or more non Number/(Number-String) arguments are given", function(){
 
-        result= typeof Types.forceNumber( [1, 2, 3], null, [] );
+        result= Types.typeof( Types.forceNumber([1, 2, 3], null, []) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( 'true', /false/ );
+        result= Types.typeof( Types.forceNumber('true', /false/) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( new Date(), null, undefined );
+        result= Types.typeof( Types.forceNumber(new Date(), null, undefined) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( 10 + 10 === 0, [1,2,3],  {} );
+        result= Types.typeof( Types.forceNumber(10 + 10 === 0, [1,2,3],  {}) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( function(){ return true; }, new Date(), Object );
+        result= Types.typeof( Types.forceNumber(function(){ return true; }, new Date(), Object) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( null, NaN  );
+        result= Types.typeof( Types.forceNumber(null, NaN ) );
         expect( result ).toBe( 'number' );
 
-        result= typeof Types.forceNumber( NaN, undefined );
+        result= Types.typeof( Types.forceNumber(NaN, undefined) );
         expect( result ).toBe( 'number' );
 
     });
 
 
-    it("should return the value of the only argument as a Number, only when it is a Number/(Number-String), otherwise a Number 0 instead", function(){
+    it("should return result.void === true if argument cannot be converted to a usable Number", function(){
 
-        result= Types.forceNumber( 'true' );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( 'true' ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( 10+ '');
-        expect( result ).toBe( 10 );
+        result= Types.forceNumber( parseInt('abc', 10) ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( 0 );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( true ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( 10 + 10 );
-        expect( result ).toBe( 20 );
+        result= Types.forceNumber( false ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( parseInt('123', 10) );
-        expect( result ).toBe( 123 );
+        result= Types.forceNumber( /false/ ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( parseInt('abc', 10) );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( function(){ return true; } ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( true );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( null ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( false );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( NaN ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( /false/ );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( undefined ).void;
+        expect( result ).toBe( true );
 
-        result= Types.forceNumber( function(){ return true; } );
-        expect( result ).toBe( 0 );
-
-        result= Types.forceNumber( null );
-        expect( result ).toBe( 0 );
-
-        result= Types.forceNumber( NaN );
-        expect( result ).toBe( 0 );
-
-        result= Types.forceNumber( undefined );
-        expect( result ).toBe( 0 );
-
-        result= Types.forceNumber( new Boolean() );
-        expect( result ).toBe( 0 );
+        result= Types.forceNumber( new Boolean() ).void;
+        expect( result ).toBe( true );
 
     });
 
 
-    it("should return the value of the second argument as a Number(if it is a Number), or false, when the first argument is not a Number", function(){
+    it("should return the value of the second argument as a Number(if it is a Number)", function(){
 
         result= Types.forceNumber( 'true', 1 );
         expect( result ).toBe( 1 );
