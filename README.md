@@ -44,7 +44,7 @@ _.forceFunction( callback )( left );
 ```
 Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
 ____________________________________________________________
-**Number.void**<br/>
+**.void**<br/>
 Make a numberFilter for arguments with the new forceNumber:
 ```javascript
 function numberFilter(){
