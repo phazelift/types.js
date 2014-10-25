@@ -43,6 +43,29 @@ _.forceFunction( callback )( left );
 // see below for more examples
 ```
 Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
+____________________________________________________________
+**Number.void**<br/>
+Make a numberFilter for arguments with the new forceNumber:
+```javascript
+function numberFilter(){
+	var numbers= [];
+	for( var arg in arguments ){
+		var value= _.forceNumber( arguments[arg] );
+		if( value.void )
+			continue;
+		numbers.push( value );
+	}
+	return numbers;
+}
+
+function someFunc(){
+	return numberFilter.apply( this, arguments );
+}
+console.log( someFunc('ignore', 1, 'the', 2, 'strings!', 3) );
+// [ 1, 2, 3 ]
+console.log( someFunc('1 but', '2 not', '3 unconditional!') );
+// [ 1, 2, 3 ]
+```
 ___
 For use with node.js you can install with `npm install types.js`
 ___
@@ -50,18 +73,18 @@ ___
 Basic usage:
 ------------
 
-**forceString** Forces a value to be of a given type, and returns that value, a replacement, or it's literal default.
+**force'Type'** Forces a value to be of a given type, and returns that value, a replacement, or it's literal default.
 
-**isString** and **notString** (and the other is and not-types) are useful for single argument type checking.
+**is'Type'** and **not'Type'** are useful for single argument type checking.
 
-**allString** (and the other all-types) are useful for checking if all given arguments are of a certain type.
+**all'Type'** are useful for checking if all given arguments are of a certain type.
 
-**hasString** (and the other has-types) are useful for checking if one or more arguments are of a certain type.
+**has'Type'** are useful for checking if one or more arguments are of a certain type.
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
 ___
 
-**some examples:**
+**some more examples:**
 ```javascript
 var _= Types;									// browser
 var _= require( 'types.js' );					// in node.js with npm
@@ -240,6 +263,8 @@ change log
 Changed:
 -	forceNumber doesn't return 0 by default anymore. It now returns a Number object with a .void property which is set to
 	true if no valid Number was given or no conversion was possible.
+
+	Just use: `_.forceNumber( value, 0 );` to return a 0 as replacement, it only is not default anymore.
 
 	I made this change because I wanted to be able to check if forceNumber was successful. Just a 0 can be very misleading and
 	a source for bugs. NaN is a failure IMO, so I made a kind of replacement feature in forceNumber.

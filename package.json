@@ -1,7 +1,7 @@
 {
   "name": "types.js",
-  "version": "1.3.5",
-  "description": "A tiny (1.7kb), but essential Javascript type-check library",
+  "version": "1.3.7",
+  "description": "A tiny (1.8kb), but essential Javascript type-check library",
   "main": "types.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,7 +16,13 @@
     "types",
     "validation",
     "check",
-    "force"
+    "type-checking",
+    "force",
+    "force-type",
+    "is",
+    "not",
+    "has",
+    "all"
   ],
   "author": "Dennis Raymondo <phazelift@gmail.com> (https://github.com/phazelift/)",
   "license": "GPL-3",
