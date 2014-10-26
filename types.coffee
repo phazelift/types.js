@@ -17,7 +17,7 @@
 
 "use strict"
 
-# I refactored types.js quite a bit to make it smaller and faster, at the cost of readability.
+# I refactored types.js quite a bit to make it smaller and faster, at the cost of readability..
 
 # create a Number to work with, and attach .void so you can test before fetching
 emptyNumber= ->
@@ -95,7 +95,6 @@ do -> for name, predicate of typesPredicates then do ( name, predicate ) ->
 Types.typeof= ( value ) ->
 	for type, predicate of typesPredicates
 		return type.toLowerCase() if predicate(value) is true
-	return 'unknown'
 
 if window? then window.Types= Types
 else if module then module.exports= Types

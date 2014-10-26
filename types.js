@@ -152,7 +152,6 @@
         return type.toLowerCase();
       }
     }
-    return 'unknown';
   };
 
   if (typeof window !== "undefined" && window !== null) {

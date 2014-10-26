@@ -7,7 +7,7 @@ Especially in non-typed scripting languages like Javascript, proper manual type 
 Because type checking in Javascript is such a mess, I decided to make a library with clear standards
 I can build upon.
 
-A few quick examples with types.js:
+**A few quick examples with types.js:**
 ```javascript
 _.typeof( [] );							// 'array'
 _.typeof( null );						// 'null'
@@ -43,29 +43,6 @@ _.forceFunction( callback )( left );
 // see below for more examples
 ```
 Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
-____________________________________________________________
-**.void**<br/>
-Make a numberFilter for arguments with the new forceNumber:
-```javascript
-function numberFilter(){
-	var numbers= [];
-	for( var arg in arguments ){
-		var value= _.forceNumber( arguments[arg] );
-		if( value.void )
-			continue;
-		numbers.push( value );
-	}
-	return numbers;
-}
-
-function someFunc(){
-	return numberFilter.apply( this, arguments );
-}
-console.log( someFunc('ignore', 1, 'the', 2, 'strings!', 3) );
-// [ 1, 2, 3 ]
-console.log( someFunc('1 but', '2 not', '3 unconditional!') );
-// [ 1, 2, 3 ]
-```
 ___
 For use with node.js you can install with `npm install types.js`
 ___
@@ -77,9 +54,9 @@ Basic usage:
 
 **is'Type'** and **not'Type'** are useful for single argument type checking.
 
-**all'Type'** are useful for checking if all given arguments are of a certain type.
+**all'Type'** is useful for checking if all given arguments are of a certain type.
 
-**has'Type'** are useful for checking if one or more arguments are of a certain type.
+**has'Type'** is useful for checking if one or more arguments are of a certain type.
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
 ___
@@ -91,34 +68,22 @@ var _= require( 'types.js' );					// in node.js with npm
 
 var x;
 // initialize a variable and be sure what type it will have in any case:
-x= _.forceString();								// (empty String)
-x= _.forceString( null, 'ok' );					// ok (as String)
-x= _.forceString( null, [1, 2, 3] );			// (empty String)
-x= _.forceString(33);							// 33 (as String)
+x= _.forceString();								// '' (empty String)
+x= _.forceString( null, 'ok' );					// 'ok' (as String)
+x= _.forceString( null, [1, 2, 3] );			// '' (empty String)
+x= _.forceString(33);							// '33' (as String)
 x= _.forceNumber('35px');						// 35 (as Number)
 x= _.forceNumber( true, function(){} );			// 0 (as Number)
 x= _.forceBoolean('35px');						// false (as Boolean)
-
-// initialize your object:
-var Client= function( name ){
-	this.name= _.forceString( name, 'no name given yet' );
-};
-var unborn= new Client();
-console.log( unborn.name );						// 'no name given yet'
+x= _.forceArray("you'll get an array");			// []
 
 var func= null;
 // call a function that might not exist anymore:
-_.forceFunction( func )( 'some arguments', 'for func' );
+_.forceFunction( func )( 'arguments for func, or replacement' );
 // no crash, default empty function is called, returns undefined
 
-// or add a replacement function in case the first one fails:
-var message= _.forceFunction( func, function(args){
-	return 'replacement function used '+ args;
- })( 'with some arguments' );
- console.log( message );
- // replacement function used with some arguments
-
 // some default type checking:
+x= _.isDefined()								// false
 x= _.isString( 'Hello types.js!' );				// true
 x= _.isString( 23456 );							// false
 x= _.isBoolean( false );						// true
@@ -159,67 +124,132 @@ API
 **Types.parseIntBase**
 > `<Number> parseIntBase= 10`
 
-> Holds the Radix used by forceNumber, defaults to decimals. Can be set to valid radixes for parseInt().
-
+Holds the Radix used by forceNumber, defaults to decimals. Can be set to valid radixes for parseInt(). Note that once set, all
+following forceNumber calls will use the new Radix.
+```javascript
+_.parseIntBase= 0xf;
+// parse from hexadecimal
+var nr= _.forceNumber( 'a linefeed' );
+console.log( nr );
+// 10 (decimal)
+```
 **Types.forceBoolean**
 > `<String> Types.forceBoolean( value, replacement )`
 
-> Returns value if value is of type Boolean. Otherwise it will try to convert value to be a Boolean. If that
-> fails too, replacement will be tested for, or converted to, 'boolean' if possible. If that fails, the default
-> types.js boolean literal is returned: a Boolean `false`
-
+Returns value if value is of type Boolean. Otherwise it will try to convert value to be a Boolean. If that
+fails too, replacement will be tested for, or converted to, 'boolean' if possible. If that fails, the default
+types.js boolean literal is returned: a Boolean `false`
+```javascript
+var assert= _.forceBoolean( 'Only a true true returns true' );
+console.log( assert );
+var assert= _.forceBoolean( NaN != NaN );
+console.log( assert );
+// true
+```
 **Types.forceString**, **Types.forceArray**, **Types.forceObject**
 
-> Just like forceBoolean, only applying the type denoted by the method name. See the force'Type' literals for
-> the different methods below.
+Just like forceBoolean, only applying the type denoted by the method name. See the force'Type' literals for
+the different methods below.
 
 **Types.forceNumber**
-> `<Number> forceNumber( <String>/<Number> value, <String>/<Number> replacement )`
+ > `<Number> forceNumber( <String>/<Number> value, <String>/<Number> replacement )`
 
-> Returns value if it is a Number or convertable to a Number. Returns replacement if value is invalid or not convertable.
-> Returns a Number object with a .void property set to true if no valid value and replacement were given or no conversion was possible.
+Returns value if it is a Number or convertable to a Number. Returns replacement if value is invalid or not convertable.
+Returns a Number object with a .void property set to true if no valid value and replacement were given or no conversion was possible.
 
-> You can check yourNumber.void to see if yourNumber is set to a valid number. If .void is true, yourNumber is not set to a
-> number, but to a Number object which is ready for mathemetical operation, and defaults to 0.
+You can check yourNumber.void to see if yourNumber is set to a valid number. If .void is true, yourNumber is not set to a
+number, but to a Number object which is ready for mathemetical operation, and defaults to 0.
 
-> `Types.typeof( Types.forceNumber() );` returns 'number', as it is a Number and you can use it as number.
+`Types.typeof( Types.forceNumber() );` returns 'number', as it is a Number and you can use it as number.
+
+Example: make a numberFilter for arguments with the new forceNumber:
+```javascript
+function numberFilter(){
+	var numbers= [];
+	for( var arg in arguments ){
+		var value= _.forceNumber( arguments[arg] );
+		if( value.void )
+			continue;
+		numbers.push( value );
+	}
+	return numbers;
+}
+
+function someFunc(){
+	return numberFilter.apply( this, arguments );
+}
+console.log( someFunc('ignore', 1, 'the', 2, 'strings!', 3) );
+// [ 1, 2, 3 ]
+console.log( someFunc('1 but', '2 not', '3 unconditional!') );
+// [ 1, 2, 3 ]
+```
 
 **Types.forceFunction**
 > `<Function> Types.forceFunction( <Function> func, <Function> replacement )`
 
-> Returns func if it is a Function. So you can call your function with Types.forceFunction(func)( args ). If it is
-> a Function, it will call and pass the given arguments.
+Returns func if it is a Function. So you can call your function with Types.forceFunction(func)( args ). If it is
+a Function, it will call and pass the given arguments.
 
-> forceFunction will not try/catch func for other failures.
+forceFunction will not try/catch func for other failures.
 
-> If func or replacement are not of type Function, a dummy function will be called returning undefined.
+If func or replacement are not of type Function, a dummy function will be called returning undefined.
+```javascript
+var showAuthor= function( name ){
+	console.log( 'Author: '+ _.forceString(name) );
+};
 
+_.forceFunction( showAuthor )( 'Dennis Raymondo' );
+// Author: Dennis Raymondo
+
+var showAuthor= null;
+// now call with an anonymus replacement function as showAuthor will fail:
+_.forceFunction( showAuthor, function(name){
+	console.log( 'Could not call showAuthor! Arguments: '+ _.forceString(name) );
+})( 'Dennis Raymondo' );
+// Could not call showAuthor! Arguments: Dennis Raymondo
+```
 **Types.typeof**
 > `<String> Types.typeof( value )`
 
-> Returns a lowercase string representation of the type of value, according to types.js types. See all types.js
-> type-definitions below.
-
+Returns a lowercase string representation of the type of value, according to types.js types. See all types.js
+type-definitions below.
+```javascript
+var nan= parseInt( 'damn NaN!' );
+console.log( _.typeof(nan) );
+// 'nan'
+```
 **Types.isBoolean**
 > `<Boolean> Types.isBoolean( value )`
 
-> Returns true if the given argument is a Boolean true or false
-
+Returns true if the given argument is a Boolean true or false
+```javascript
+console.log( _.isBoolean(false) );
+// true
+```
 **Types.notBoolean**
 > `<Boolean> Types.isBoolean( value )`
 
-> Returns true if the given argument is not a Boolean true or false
-
+Returns true if the given argument is not a Boolean true or false
+```javascript
+console.log( _.notBoolean('not a Boolean') );
+// true
+```
 **Types.hasBoolean**
 > `<Boolean> Types.hasBoolean( values, [value1, ..., valueN])`
 
-> Returns true if any of the given arguments is a Boolean true or false
-
+Returns true if any of the given arguments is a Boolean true or false
+```javascript
+console.log( _.hasBoolean('the third', null, false) );
+// true
+```
 **Types.allBoolean**
 > `<Boolean> Types.allBoolean( values, [value1, ..., valueN])`
 
-> Returns true only if all given arguments are either a Boolean true or false
-
+Returns true only if all given arguments are either a Boolean true or false
+```javascript
+console.log( _.allBoolean(false, null, true) );
+// false
+```
 All remaining methods are equal to the last four above, except for that they differ in the type being checked. The complete
 list of all these methods:
 
@@ -242,22 +272,30 @@ notNaN				|isNaN				|hasNaN				|allNaN
 ____________________________
 **types.js type definitions:**
 
-'boolean', 'string', 'number', 'object', 'array', 'function', 'regexp', 'date', 'null', 'undefined', 'nan', 'unknown'
+'boolean', 'string', 'number', 'object', 'array', 'function', 'regexp', 'date', 'null', 'undefined', 'nan'
 
 ____________________________
 **force'Type' method and default literals**
+> `<'Type'> force'Type'( <any type> value, <'Type'> replacement )`
 
-> format: `<'Type'> force'Type'( <any type> value, <'Type'> replacement )`
-<br/><br/>
-> The literals returned by default:
+The literals returned by default:
 
 forceBoolean	|forceString	|forceNumber	|forceObject		|forceArray		|forceFunction
----------------|--------------|--------------|---------------|--------------|--------------
-`false`			|`''`				|`0`				|`{}`				|`[]`				|`function(){}`
+---------------|--------------|--------------|--------------|--------------|--------------
+`false`			|`''`				|`0` (Number)	|`{}`				|`[]`				|`function(){}`
 
 change log
 ==========
 
+1.3.9
+
+Removed 'unknown' from types.js type definitions. It was meant to be like a final state, for if no other matching type could
+be found, but in the codebase as it is now, that state can never be reached.. If Javascript ever invents a brand new type,
+types.js will return 'defined' on that one if I would not take action and implement support for it.
+
+Updated the readme.
+
+__________________________________________
 1.3.5
 
 Changed:
