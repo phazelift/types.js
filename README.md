@@ -155,12 +155,18 @@ the different methods below.
  > `<Number> forceNumber( <String>/<Number> value, <String>/<Number> replacement )`
 
 Returns value if it is a Number or convertable to a Number. Returns replacement if value is invalid or not convertable.
-Returns a Number object with a .void property set to true if no valid value and replacement were given or no conversion was possible.
+Returns a Number object with a .void property set to true if no valid value and replacement were given and
+conversion was not possible.
 
-You can check yourNumber.void to see if yourNumber is set to a valid number. If .void is true, yourNumber is not set to a
-number, but to a Number object which is ready for mathemetical operation, and defaults to 0.
+You can check value.void to see if value is ready to be fetched. If value.void is true, you can only fetch it's
+default value by doing some mathematical operation on it like: `value+ 0`, otherwise you'll get an object. After
+any mathematical operation on value, value.void will be undefined and value has become a 'real' number.
+If value.void is true, the default value returned with `value+ 0` is 0.
 
-`Types.typeof( Types.forceNumber() );` returns 'number', as it is a Number and you can use it as number.
+If you want to be sure that forceNumber returns a 'real' number, then simply supply a 'real' number replacement,
+like: `var nr= _.forceNumber(nr, 0);`, and it will never return the Number-object form.
+
+`Types.typeof( nr= Types.forceNumber() );` returns 'number', also if `nr.void === true`
 
 Example: make a numberFilter for arguments with the new forceNumber:
 ```javascript
@@ -175,12 +181,12 @@ function numberFilter(){
 	return numbers;
 }
 
-function someFunc(){
+function forceArgsToNumber(){
 	return numberFilter.apply( this, arguments );
 }
-console.log( someFunc('ignore', 1, 'the', 2, 'strings!', 3) );
+console.log( forceArgsToNumber('ignore', 1, 'the', 2, 'strings!', 3) );
 // [ 1, 2, 3 ]
-console.log( someFunc('1 but', '2 not', '3 unconditional!') );
+console.log( forceArgsToNumber('1 but', '2 not', '3 unconditional!') );
 // [ 1, 2, 3 ]
 ```
 
