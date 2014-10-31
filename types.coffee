@@ -17,84 +17,77 @@
 
 "use strict"
 
-# I refactored types.js quite a bit to make it smaller and faster, at the cost of readability..
+instanceOf	= ( type, value ) -> value instanceof type
+# type defaults to object, for internal can do, saves for a few bytes..
+typeOf		= ( value, type= 'object' ) -> typeof value is type
 
-# create a Number to work with, and attach .void so you can test before fetching
-emptyNumber= ->
-	number= new Number
-	number.void= true
-	return number
-
-Types=
-	# used by forceNumber to set the Radix, defaults to decimals
-	parseIntBase: 10
-
-# types.js default literals, used for literal instantiation when forceType failed
-literals=
+LITERALS=
 	'Boolean'	: false
 	'String'		: ''
-	'Number'		: emptyNumber()
 	'Object'		: {}
 	'Array'		: []
 	'Function'	: ->
+	'Number'		: do ->
+		number= new Number
+		number.void= true
+		return number
 
-# returns a function that returns a value tested for a certain type.
+TYPES=
+	'Undefined'		: ( value ) -> value is undefined
+	'Null'			: ( value ) -> value is null
+	'Function'		: ( value ) -> typeOf value, 'function'
+	'Boolean'		: ( value ) -> typeOf value, 'boolean'
+	'String'			: ( value ) -> typeOf value, 'string'
+	'Array'			: ( value ) -> typeOf(value) and instanceOf Array, value
+	'RegExp'			: ( value ) -> typeOf(value) and instanceOf RegExp, value
+	'Date'			: ( value ) -> typeOf(value) and instanceOf Date, value
+	'Number'			: ( value ) -> typeOf(value, 'number') and (value is value) or ( typeOf(value) and instanceOf(Number, value) )
+	'Object'			: ( value ) -> typeOf(value) and (value isnt null) and not instanceOf(Boolean, value) and not instanceOf(Number, value) and not instanceOf(Array, value) and not instanceOf(RegExp, value) and not instanceOf(Date, value)
+	'NaN'				: ( value ) -> typeOf(value, 'number') and (value isnt value)
+	'Defined'		: ( value ) -> value isnt undefined
+
+TYPES.StringOrNumber= (value) -> TYPES.String(value) or TYPES.Number(value)
+
+Types= _=
+	# used by forceNumber to set the Radix, defaults to decimals
+	parseIntBase: 10
+
 createForce= ( type ) ->
-
-	# will try to convert value in case initial type test failed. failed conversion returns false
+	# convert value in case initial type test failed. failed conversion returns false
 	convertType= ( value ) ->
 		switch type
-			when 'Number' then return value if Types.isNumber value= parseInt value, Types.parseIntBase
-			when 'String' then return value+ '' if Types.isStringOrNumber value
-			else return value if Types[ 'is'+ type ] value
-		return false
+			when 'Number' then return value if (_.isNumber value= parseInt value, _.parseIntBase) and not value.void
+			when 'String' then return value+ '' if _.isStringOrNumber value
+			else return value if _[ 'is'+ type ] value
 
-	# the actual forctType method, returns the type's literal, if both value and replacement are not of, or convertible to, type
+	# the forctType method, returns the type's defaultValue, if both value and replacement are not of, or convertible to, type
 	return ( value, replacement ) ->
-		return value if false isnt value= convertType value
-		return replacement if false isnt replacement= convertType replacement
-		return literals[ type ]
+		return value if value? and undefined isnt value= convertType value
+		return replacement if replacement? and undefined isnt replacement= convertType replacement
+		return LITERALS[ type ]
 
-# test multiple values for a given predicate. returns breakState if predicate is breakState for some value
+# test multiple values(arguments) for a given predicate. returns breakState if predicate is breakState for some value
 # when no break occured, ! breakState will be returned.
 testValues= ( predicate, breakState, values= [] ) ->
-	if values.length < 1
-		# testing 'has' or 'all' for 'undefined' should return true on calls without arguments
-		return true if predicate is typesPredicates.Undefined
-		return false
+	# testing 'has' or 'all' for 'undefined' should return true on calls without arguments
+	return ( predicate is TYPES.Undefined ) if values.length < 1
 	for value in values
-		return breakState if (predicate value) is breakState
+		return breakState if predicate(value) is breakState
 	return not breakState
 
-typesPredicates=
-	'Undefined'		: (value) -> value is undefined
-	'Null'			: (value) -> value is null
-	'Boolean'		: (value) -> typeof value is 'boolean'
-	'String'			: (value) -> typeof value is 'string'
-	'Function'		: (value) -> typeof value is 'function'
-	'Number'			: (value) -> (typeof value is 'number') and (value is value) or ( (typeof value is 'object') and (value instanceof Number) and value.void )
-	'Array'			: (value) -> (typeof value is 'object') and (value instanceof Array)
-	'RegExp'			: (value) -> (typeof value is 'object') and (value instanceof RegExp)
-	'Date'			: (value) -> (typeof value is 'object') and (value instanceof Date)
-	'Object'			: (value) -> (typeof value is 'object') and (value isnt null) and not (value instanceof Array) and not (value instanceof RegExp) and not (value instanceof Date)
-	'NaN'				: (value) -> (typeof value is 'number') and (value isnt value)
-	'Defined'		: (value) -> value isnt undefined
-
-typesPredicates.StringOrNumber= (value) -> typesPredicates['String'](value) or typesPredicates['Number'](value)
-
-# generate all the is/not/has/all/force Types
+# generate all the is/not/has/all/force _
 breakIfEqual= true
-do -> for name, predicate of typesPredicates then do ( name, predicate ) ->
+do -> for name, predicate of TYPES then do ( name, predicate ) ->
 	Types[ 'is'+ name ]	= predicate
 	Types[ 'not'+ name ]	= ( value ) -> not predicate value
 	Types[ 'has'+ name ]	= -> testValues predicate, breakIfEqual, arguments
 	Types[ 'all'+ name ]	= -> testValues predicate, not breakIfEqual, arguments
-	# create only forceTypes of types found in literals
-	Types[ 'force'+ name ]= createForce name if name of literals
+	# create only forceType of types found in LITERALS
+	Types[ 'force'+ name ]= createForce name if name of LITERALS
 
 Types.typeof= ( value ) ->
-	for type, predicate of typesPredicates
-		return type.toLowerCase() if predicate(value) is true
+	for name, predicate of TYPES
+		return name.toLowerCase() if predicate(value) is true
 
-if window? then window.Types= Types
-else if module then module.exports= Types
+if typeof window isnt 'undefined' then window.Types= Types
+else if typeof module isnt 'undefined' then module.exports= Types

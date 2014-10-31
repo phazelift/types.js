@@ -5,7 +5,7 @@
 
 describe("forceNumber(value, replacement)", function() {
 
-  it("should be able to do mathemetical operations with a emptyNumber", function(){
+  it("should be able to do mathemetical operations with an emptyNumber", function(){
 
     result= Types.forceNumber();
     result+= 10;
@@ -29,7 +29,6 @@ describe("forceNumber(value, replacement)", function() {
 
   });
 });
-
 
 
 describe("forceNumber(value, replacement)", function() {
@@ -225,60 +224,63 @@ describe("isBoolean( value )", function() {
 
 describe("isString( value )", function() {
 
-  it("should return true for type String arguments only", function(){
+    it("should return true for type String arguments only", function(){
 
-    result= Types.isString( '' );
-    expect( result ).toBe( true );
+        result= Types.isString( '' );
+        expect( result ).toBe( true );
 
-    result= Types.isString( "" );
-    expect( result ).toBe( true );
+        result= Types.isString( "" );
+        expect( result ).toBe( true );
 
-    result= Types.isString( '123' );
-    expect( result ).toBe( true );
+        result= Types.isString( '123' );
+        expect( result ).toBe( true );
 
-    result= Types.isString( "123" );
-    expect( result ).toBe( true );
+        result= Types.isString( "123" );
+        expect( result ).toBe( true );
 
-    result= Types.isString( (function(){ return 'string (only when called..)'; })() );
-    expect( result ).toBe( true );
+        result= Types.isString( (function(){ return 'string (only when called..)'; })() );
+        expect( result ).toBe( true );
+    });
 
-    result= Types.isString();
-    expect( result ).toBe( false );
+    it("should return false if argument is not of type String", function(){
 
-    result= Types.isString( true );
-    expect( result ).toBe( false );
+        result= Types.isString();
+        expect( result ).toBe( false );
 
-    result= Types.isString( new String() );
-    expect( result ).toBe( false );
+        result= Types.isString( new String() );
+        expect( result ).toBe( false );
 
-    result= Types.isString( 234 );
-    expect( result ).toBe( false );
+        result= Types.isString( true );
+        expect( result ).toBe( false );
 
-    result= Types.isString( ['array'] );
-    expect( result ).toBe( false );
+        result= Types.isString( 234 );
+        expect( result ).toBe( false );
 
-    result= Types.isString( {string: 'string'} );
-    expect( result ).toBe( false );
+        result= Types.isString( ['array'] );
+        expect( result ).toBe( false );
 
-    result= Types.isString( /regexp/ig );
-    expect( result ).toBe( false );
+        result= Types.isString( {string: 'string'} );
+        expect( result ).toBe( false );
 
-    result= Types.isString( new Date() );
-    expect( result ).toBe( false );
+        result= Types.isString( /regexp/ig );
+        expect( result ).toBe( false );
 
-    result= Types.isString( function(){ return 'string (only when called..)'; } );
-    expect( result ).toBe( false );
+        result= Types.isString( new Date() );
+        expect( result ).toBe( false );
 
-    result= Types.isString( NaN );
-    expect( result ).toBe( false );
+        result= Types.isString( function(){ return 'string (only when called..)'; } );
+        expect( result ).toBe( false );
 
-    result= Types.isString( null );
-    expect( result ).toBe( false );
+        result= Types.isString( NaN );
+        expect( result ).toBe( false );
 
-    result= Types.isString( undefined );
-    expect( result ).toBe( false );
+        result= Types.isString( null );
+        expect( result ).toBe( false );
 
-  });
+        result= Types.isString( undefined );
+        expect( result ).toBe( false );
+
+    });
 });
 
 describe("isNumber( value )", function() {
@@ -474,7 +476,9 @@ describe("isObject( value )", function() {
 
     result= Types.isObject( new String() );
     expect( result ).toBe( true );
+  });
 
+ it("should return false if argument is not instanceof Object", function(){
     result= Types.isObject();
     expect( result ).toBe( false );
 
@@ -827,56 +831,58 @@ describe("notString( value )", function() {
 
   it("should return true if argument is not of type String", function(){
 
-    result= ! Types.notString( '' );
+    result= Types.notString( '' );
+    expect( result ).toBe( false );
+
+    result= Types.notString( "" );
+    expect( result ).toBe( false );
+
+    result= Types.notString( '123' );
+    expect( result ).toBe( false );
+
+    result= Types.notString( "123" );
+    expect( result ).toBe( false );
+
+    result= Types.notString( (function(){ return 'string (only when called..)'; })() );
+    expect( result ).toBe( false );
+  });
+
+  it("should return true if argument is not of type String", function(){
+    result= Types.notString();
     expect( result ).toBe( true );
 
-    result= ! Types.notString( "" );
+    result= Types.notString( new String() );
     expect( result ).toBe( true );
 
-    result= ! Types.notString( '123' );
+    result= Types.notString( true );
     expect( result ).toBe( true );
 
-    result= ! Types.notString( "123" );
+    result= Types.notString( 234 );
     expect( result ).toBe( true );
 
-    result= ! Types.notString( (function(){ return 'string (only when called..)'; })() );
+    result= Types.notString( ['array'] );
     expect( result ).toBe( true );
 
-    result= ! Types.notString();
-    expect( result ).toBe( false );
+    result= Types.notString( {string: 'string'} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( true );
-    expect( result ).toBe( false );
+    result= Types.notString( /regexp/ig );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( new String() );
-    expect( result ).toBe( false );
+    result= Types.notString( new Date() );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( 234 );
-    expect( result ).toBe( false );
+    result= Types.notString( function(){ return 'string (only when called..)'; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( ['array'] );
-    expect( result ).toBe( false );
+    result= Types.notString( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( {string: 'string'} );
-    expect( result ).toBe( false );
+    result= Types.notString( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( /regexp/ig );
-    expect( result ).toBe( false );
-
-    result= ! Types.notString( new Date() );
-    expect( result ).toBe( false );
-
-    result= ! Types.notString( function(){ return 'string (only when called..)'; } );
-    expect( result ).toBe( false );
-
-    result= ! Types.notString( NaN );
-    expect( result ).toBe( false );
-
-    result= ! Types.notString( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notString( undefined );
-    expect( result ).toBe( false );
+    result= Types.notString( undefined );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1424,28 +1430,30 @@ describe("hasString( value, [value1, ..., valueN] )", function() {
 
   it("should return true if at least one argument is of type String", function(){
 
-    result= Types.hasString( '' );
-    expect( result ).toBe( true );
+        result= Types.hasString( '' );
+        expect( result ).toBe( true );
 
-    result= Types.hasString( 24, true, 'string' );
-    expect( result ).toBe( true );
+        result= Types.hasString( 24, true, 'string' );
+        expect( result ).toBe( true );
 
-    result= Types.hasString( [1, 2, 3], (function(){ return 'string returned'; })() );
-    expect( result ).toBe( true );
+        result= Types.hasString( [1, 2, 3], (function(){ return 'string returned'; })() );
+        expect( result ).toBe( true );
 
-    result= Types.hasString( 44, null, undefined, "123" );
-    expect( result ).toBe( true );
+        result= Types.hasString( 44, null, undefined, "123" );
+        expect( result ).toBe( true );
 
-    result= Types.hasString( (function(){ return 'string (only when called..)'; })(), 44, new Date(), NaN );
-    expect( result ).toBe( true );
+        result= Types.hasString( (function(){ return 'string (only when called..)'; })(), 44, new Date(), NaN );
+        expect( result ).toBe( true );
+    });
 
+  it("should return false if no argument is of type String", function(){
     result= Types.hasString();
     expect( result ).toBe( false );
 
-    result= Types.hasString( true, [1], { aString: 'string' }, 2345 );
+    result= Types.hasString( new String(), 123, undefined );
     expect( result ).toBe( false );
 
-    result= Types.hasString( new String(), 123, undefined );
+    result= Types.hasString( true, [1], { aString: 'string' }, 2345 );
     expect( result ).toBe( false );
 
     result= Types.hasString( 234, parseInt('abc') );
@@ -1500,7 +1508,7 @@ describe("hasNumber( value, [value1, ..., valueN] )", function() {
     result= Types.hasNumber( true, '0', /234/ );
     expect( result ).toBe( false );
 
-    result= Types.hasNumber( new Boolean(), new Number(), 'nono' );
+    result= Types.hasNumber( new Boolean(), new Array(), 'no' );
     expect( result ).toBe( false );
 
     result= Types.hasNumber( '234', [1], undefined );
@@ -2096,70 +2104,72 @@ describe("forceBoolean( value )", function() {
 
     it("should return a Boolean when only one argument of any type is given", function(){
 
-        result= typeof Types.forceBoolean( true );
+        result= Types.typeof( Types.forceBoolean( true ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( '' );
+        result= Types.typeof( Types.forceBoolean( '' ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( 'true' );
+        result= Types.typeof( Types.forceBoolean( 'true' ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( 0 );
+        result= Types.typeof( Types.forceBoolean( 0 ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( 10 + 10 );
+        result= Types.typeof( Types.forceBoolean( 10 + 10 ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( function(){ return true; } );
+        result= Types.typeof( Types.forceBoolean( function(){ return true; } ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( null );
+        result= Types.typeof( Types.forceBoolean( null ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( NaN );
+        result= Types.typeof( Types.forceBoolean( NaN ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean();
+        result= Types.typeof( Types.forceBoolean() );
         expect( result ).toBe( 'boolean' );
 
       });
 
     it("should return a Boolean when two or more non Boolean arguments are given", function(){
 
-        result= typeof Types.forceBoolean( 1, 2, 3 );
+        result= Types.typeof( Types.forceBoolean( 1, 2, 3 ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( '', 'true' );
+        result= Types.typeof( Types.forceBoolean( '', 'true' ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( 'true', /false/ );
+        result= Types.typeof( Types.forceBoolean( 'true', /false/ ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( 0, null, undefined );
+        result= Types.typeof( Types.forceBoolean( 0, null, undefined ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( 10 + 10, [1,2,3],  {} );
+        result= Types.typeof( Types.forceBoolean( 10 + 10, [1,2,3],  {} ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( function(){ return true; }, new Date(), Object );
+        result= Types.typeof( Types.forceBoolean( function(){ return true; }, new Date(), Object ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( null, NaN  );
+        result= Types.typeof( Types.forceBoolean( null, NaN  ) );
         expect( result ).toBe( 'boolean' );
 
-        result= typeof Types.forceBoolean( NaN, undefined );
+        result= Types.typeof( Types.forceBoolean( NaN, undefined ) );
         expect( result ).toBe( 'boolean' );
 
     });
 
-    it("should return the value of the argument as a Boolean when it is a Boolean, or a Boolean false instead", function(){
-
+    it("should return the value of the argument as a Boolean when it is a Boolean with a value", function(){
         result= Types.forceBoolean( true );
         expect( result ).toBe( true );
 
         result= Types.forceBoolean( false );
         expect( result ).toBe( false );
+    });
+
+    it("should return a Boolean false if argument is not a Boolean or convertable", function(){
 
         result= Types.forceBoolean( /false/ );
         expect( result ).toBe( false );
@@ -2170,7 +2180,7 @@ describe("forceBoolean( value )", function() {
         result= Types.forceBoolean( 10 + 10 );
         expect( result ).toBe( false );
 
-        result= Types.forceBoolean( function(){ return true; } );
+        result= Types.forceBoolean( function(){ return false; } );
         expect( result ).toBe( false );
 
         result= Types.forceBoolean( null );
@@ -2185,7 +2195,7 @@ describe("forceBoolean( value )", function() {
         result= Types.forceBoolean( new Boolean() );
         expect( result ).toBe( false );
 
-        result= Types.forceBoolean( 'true' );
+        result= Types.forceBoolean( 'false' );
         expect( result ).toBe( false );
 
     });
@@ -2206,47 +2216,38 @@ describe("forceBoolean( value )", function() {
 
         result= Types.forceBoolean( function(){ return true; }, false );
         expect( result ).toBe( false );
-
-        result= Types.forceBoolean( null, undefined );
-        expect( result ).toBe( false );
-
-        result= Types.forceBoolean( NaN, new Boolean );
-        expect( result ).toBe( false );
-
     });
 });
 
 describe("forceString( value )", function() {
 
-
-
     it("should return a String type value, or String literal, when only one(or no) argument of any type is given", function(){
 
-        result= typeof Types.forceString( true );
+        result= Types.typeof( Types.forceString( true ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( '' );
+        result= Types.typeof( Types.forceString( '' ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( 'true' );
+        result= Types.typeof( Types.forceString( 'true' ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( 0 );
+        result= Types.typeof( Types.forceString( 0 ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( 10 + 10 );
+        result= Types.typeof( Types.forceString( 10 + 10 ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( function(){ return true; } );
+        result= Types.typeof( Types.forceString( function(){ return true; } ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( null );
+        result= Types.typeof( Types.forceString( null ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( NaN );
+        result= Types.typeof( Types.forceString( NaN ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString();
+        result= Types.typeof( Types.forceString() );
         expect( result ).toBe( 'string' );
 
       });
@@ -2254,31 +2255,31 @@ describe("forceString( value )", function() {
 
     it("should return a String literal when two or more non String arguments are given", function(){
 
-        result= typeof Types.forceString( 1, 2, 3 );
+        result= Types.typeof( Types.forceString( 1, 2, 3 ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( true, /false/ );
+        result= Types.typeof( Types.forceString( true, /false/ ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( 0, null, undefined );
+        result= Types.typeof( Types.forceString( 0, null, undefined ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( 10 + 10, [1,2,3],  {} );
+        result= Types.typeof( Types.forceString( 10 + 10, [1,2,3],  {} ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( function(){ return true; }, new Date(), Object );
+        result= Types.typeof( Types.forceString( function(){ return true; }, new Date(), Object ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( null, NaN  );
+        result= Types.typeof( Types.forceString( null, NaN  ) );
         expect( result ).toBe( 'string' );
 
-        result= typeof Types.forceString( NaN, undefined );
+        result= Types.typeof( Types.forceString( NaN, undefined ) );
         expect( result ).toBe( 'string' );
 
     });
 
 
-    it("should return the value of the only argument as a String when it is a String or Number, otherwise a String literal instead", function(){
+    it("should return the value of the only argument as a String when it is a String or Number", function(){
 
         result= Types.forceString( 'true' );
         expect( result ).toBe( 'true' );
@@ -2294,7 +2295,10 @@ describe("forceString( value )", function() {
 
         result= Types.forceString( parseInt('123', 10) );
         expect( result ).toBe( '123' );
+    });
 
+
+    it("should return empty string if argument is not a string", function(){
         result= Types.forceString( true );
         expect( result ).toBe( '' );
 
@@ -2691,90 +2695,84 @@ describe("forceObject( value )", function() {
     });
 
 
-    it("should return the value of the only argument as an Object, only when it is an Object, otherwise an empty Object literal {} instead", function(){
+    it("should return the value of the only argument as an Object, only when it is an Object where .void is undefined", function(){
 
-      // not waterproof for all object comparisons, but will do the job for these tests.
-      function equal( a, b ){
-        return JSON.stringify( a ) === JSON.stringify( b );
-      }
+        result= Types.forceObject( {} );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( {} ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( new Object );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( {hi: 'hi'} ), {hi: 'hi'} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( {hi: 'hi'} );
+        expect( result ).toEqual( {hi: 'hi'} );
 
-        result= equal( Types.forceObject( new Object() ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( new Object({hi: 'hi'}) );
+        expect( result ).toEqual( {hi: 'hi'} );
 
-        result= equal( Types.forceObject( 10+ '' ), {} );
-        expect( result ).toBe( true );
+    });
 
-        result= equal( Types.forceObject( 0 ), {} );
-        expect( result ).toBe( true );
 
-        result= equal( Types.forceObject( 10 + 10 ), {} );
-        expect( result ).toBe( true );
+    it("should return an object literal {} if argument is no object and no replacement is given", function(){
+        result= Types.forceObject( 10+ '' );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( parseInt('123', 10) ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( 0 );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( true ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( 10 + 10 );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( false ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( parseInt('123', 10) );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( /false/ ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( true );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( function(){ return true; } ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( false );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( null ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( /false/ );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( NaN ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( function(){ return true; } );
+        expect( result ).toEqual( {} );
 
-        result= equal( Types.forceObject( undefined ), {} );
-        expect( result ).toBe( true );
+        result= Types.forceObject( null );
+        expect( result ).toEqual( {} );
+
+        result= Types.forceObject( NaN );
+        expect( result ).toEqual( {} );
+
+        result= Types.forceObject( undefined );
+        expect( result ).toEqual( {} );
 
     });
 
     it("should return the value of the second argument as an Object(if it is an Object), or {}, when the first argument is not a Object", function(){
 
-      // not waterproof for all object comparisons, but will do the job for these tests.
-      function equal( a, b ){
-        return JSON.stringify( a ) === JSON.stringify( b );
-      }
+      result= Types.forceObject( [1, 2], {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( [1, 2], {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( /false/, {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( /false/, {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( 'abc', {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( 'abc', {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( 25, {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( 25, {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( null, {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( function(){ return true; }, {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( NaN, {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( null, {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( new Date(), {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
-      result= equal( Types.forceObject( NaN, {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
-
-      result= equal( Types.forceObject( new Date(), {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
-
-      result= equal( Types.forceObject( new RegExp(), {firstArg: 'no object'} ), {firstArg: 'no object'} );
-      expect( result ).toBe( true );
+      result= Types.forceObject( new RegExp(), {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
 
     });
 
@@ -2885,7 +2883,7 @@ describe("forceFunction( value )", function() {
 
 
     it("should return the second argument as a Function(if it is a Function), when the first argument is not of type Function", function(){
-
+        // Object is a function..
         result= Types.forceFunction( 123, Object  );
         expect( result ).toBe( Object );
 
