@@ -1,5 +1,5 @@
 {
-  "name": "types.js",
+  "name": "types-js",
   "version": "1.4.2",
   "description": "A tiny (1.8kb), essential Javascript type-check library",
   "main": "types.min.js",
@@ -16,9 +16,8 @@
     "types",
     "validation",
     "check",
-    "type-checking",
+    "checking",
     "force",
-    "force-type",
     "is",
     "not",
     "has",

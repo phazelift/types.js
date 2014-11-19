@@ -3,19 +3,24 @@ types.js
 <br/>
 A tiny(1.8Kb), essential Javascript type checking library.
 
-Javascript's type system is broken by design, and that while reliable type checking is so crucial. I had to fix this, even if
-it was just for me.
+- fixes NaN, array, null, etc..
+- checks one or multiple arguments at once
+- 4 convenience forms: isNumber, notNumber, hasNumber and allNumber (with any type of choice)
+- can force a value to be of some type, with optional value if conversion is not possible
 
+___
 **A few quick examples:**
 ```javascript
-_.typeof( [] );							// 'array'
-_.typeof( null );						// 'null'
-_.typeof( /someregexp/ );				// 'regexp'
-_.typeof( parseInt('Not A Number!') );	// 'nan'
-_.forceString( 123 );					// '123'
-_.allDefined( 'good', false, null );	// true
-_.hasObject( 'not', 'really' );			// false
-// there is much more! see below.
+_.typeof( [] );								// 'array'
+_.typeof( null );							// 'null'
+_.typeof( /someregexp/ );					// 'regexp'
+_.typeof( parseInt('Not A Number!') );		// 'nan'
+_.forceString( 123 );						// '123'
+_.forceNumber( '123mm' );					// 123
+_.forceNumber( 'use next arg..', 123 );		// 123
+_.allDefined( 'good', false, 0 );			// true
+_.hasObject( 'not', 'really' );				// false
+// there is much more, see below.
 ```
 Force!
 ------
@@ -26,19 +31,19 @@ A quick example to show how we can safely call a function with forceFunction:
 ```javascript
 var left= '500px';
 var callback= null;
-// now some 10 lines of code to be save without force:
-if ( typeof left === 'string' ){
-		left= parseInt( left, 10 );
-}
-// check if parseInt returned NaN..
-if ( left !== left || typeof left !== 'number' )
+// now some lines of code to be save:
+if ( typeof left !== 'number' ){
+ 		left= parseInt( left, 10 );
+ }
+// check for parseInt returning NaN..
+if ( left !== left || typeof left !== 'number' ){
 	left= 100;
 }
+// be safe before calling the function
 if ( typeof callback !== 'function' ){
 	callback= function(){}
 }
 callback( left );
-
 // 2 lines of code with force, and a better read if you ask me:
 left=  _.forceNumber( left, 100 );
 _.forceFunction( callback )( left );
@@ -70,14 +75,14 @@ var _= require( 'types.js' );					// in node.js with npm
 
 var x;
 // initialize a variable and be sure what type it will have in any case:
-x= _.forceString();								// '' (empty String)
-x= _.forceString( null, 'ok' );					// 'ok' (as String)
-x= _.forceString( null, [1, 2, 3] );			// '' (empty String)
-x= _.forceString(33);							// '33' (as String)
-x= _.forceNumber('35px');						// 35 (as Number)
-x= _.forceNumber( true, function(){} );			// 0 (as Number)
-x= _.forceBoolean('35px');						// false (as Boolean)
-x= _.forceArray("you'll get an array");			// []
+_.forceString();								// '' (empty String)
+_.forceString( null, 'ok' );					// 'ok' (as String)
+_.forceString( null, [1, 2, 3] );				// '' (empty String)
+_.forceString(33, 'not used');					// '33' (as String)
+_.forceNumber('35px');							// 35 (as Number)
+_.forceNumber( true, 0 );						// 0 (as Number)
+_.forceBoolean('35px');							// false (as Boolean)
+_.forceArray("you'll get an array!");			// []
 
 var func= null;
 // call a function that might not exist anymore:
@@ -85,38 +90,38 @@ _.forceFunction( func )( 'arguments for func, or replacement' );
 // no crash, default empty function is called, returns undefined
 
 // some default type checking:
-x= _.isDefined()								// false
-x= _.isString( 'Hello types.js!' );				// true
-x= _.isString( 23456 );							// false
-x= _.isBoolean( false );						// true
-x= _.isArray( [1,2,3] );						// true
-x= _.isObject( [1,2,3] );						// false
-x= _.isObject( /myRegExp/g );					// false
-x= _.isNaN( parseInt('generate NaN') );			// true
+_.isDefined()									// false
+_.isString( 'Hello types.js!' );				// true
+_.isString( 23456 );								// false
+_.isBoolean( false );							// true
+_.isArray( [1,2,3] );							// true
+_.isObject( [1,2,3] );							// false
+_.isObject( /myRegExp/g );						// false
+_.isNaN( parseInt('generate NaN') );			// true
 
-x= _.notNull('');								// true
-x= _.notUndefined( undefined );					// false
-x= _.isDefined( null );							// true
+_.notNull('');									// true
+_.notUndefined( undefined );					// false
+_.isDefined( null );							// true
 
 // check multiple values in one call:
-x= _.allString( '', " ", 'with text' );						// true
-x= _.allString( '', ' ', 'with text', 123 );				// false
-x= _.allStringOrNumber( '', ' ', 'with text', 123 );		// true
-x= _.allObject( { key: 'nice' }, [], /regexp/ig );			// false
-x= _.allArray( [1,2,3], [{}], new RegExp('stop') );			// false
-x= _.allArray( [1,2,3], [{}], [false, true] );				// true
+_.allString( '', " ", 'with text' );					// true
+_.allString( '', ' ', 'with text', 123 );				// false
+_.allStringOrNumber( '', ' ', 'with text', 123 );		// true
+_.allObject( { key: 'nice' }, [], /regexp/ig );			// false
+_.allArray( [1,2,3], [{}], new RegExp('stop') );		// false
+_.allArray( [1,2,3], [{}], [false, true] );				// true
 
-x= _.hasString( 123, { value: 'nice' }, ['?'] );			// false
-x= _.hasStringOrNumber( [1,2], /reg/, 'true' )				// true
-x= _.hasFunction( 123, { value: 'nice' }, function(){} );	// true
-x= _.hasUndefined( 'render false!', 123, null );			// false
-x= _.hasUndefined( 'render true!', 123, undefined );		// true
+_.hasString( 123, { value: 'nice' }, ['?'] );			// false
+_.hasStringOrNumber( [1,2], /reg/, 'true' )				// true
+_.hasFunction( 123, { value: 'nice' }, function(){} );	// true
+_.hasUndefined( 'render false!', 123, null );			// false
+_.hasUndefined( 'render true!', 123, undefined );		// true
 
 // check for a types.js type definition, returns lowercase string:
-x= _.typeof( [1,2,3] );										// 'array'
-x= _.typeof( null );										// 'null'
-x= _.typeof( parseInt('generate NaN') );					// 'nan'
-x= _.typeof( new Date() );									// 'date'
+_.typeof( [1,2,3] );									// 'array'
+_.typeof( null );										// 'null'
+_.typeof( parseInt('generate NaN') );					// 'nan'
+_.typeof( new Date() );									// 'date'
 // etc..
 ```
 ___
@@ -130,7 +135,7 @@ Holds the Radix used by forceNumber, defaults to decimals. Can be set to valid r
 following forceNumber calls will use the new Radix.
 ```javascript
 _.parseIntBase= 0xf;
-// parse from hexadecimal
+// parse from hexadecimal, _.forceNumber will parse character 'a'
 var nr= _.forceNumber( 'a linefeed' );
 console.log( nr );
 // 10 (decimal)
@@ -155,6 +160,7 @@ for it's workings.
 ```javascript
 var assert= _.forceBoolean( 'Only a true true returns true' );
 console.log( assert );
+// false
 var assert= _.forceBoolean( NaN != NaN );
 console.log( assert );
 // true
@@ -182,7 +188,7 @@ like: `var nr= _.forceNumber(nr, 0);`, and it will never return the Number-objec
 
 `Types.typeof( nr= Types.forceNumber() );` returns 'number', also if `nr.void === true`
 
-Example: make a numberFilter for arguments with the new forceNumber:
+Example: make a numberFilter for arguments with forceNumber:
 ```javascript
 function numberFilter(){
 	var numbers= [];
@@ -219,6 +225,7 @@ var showAuthor= function( name ){
 var brokenFunc= null;
 
 var func= _.forceFunction( showAuthor );
+// still the same function?
 console.log( func === showAuthor );
 // true
 
@@ -321,10 +328,10 @@ type				| definition
 'string'			| A string literal
 'number'			| A number literal or a 'void' Number
 'nan'				| Any value that is NaN
-'object'			| An object literal {} or any instance of Object that is not a native JS object (except for Object)
-'array'			| An array literal [] or any instance of Array
+'object'			| An object literal {}, or any instance of Object that is not a native JS object (except for Object)
+'array'			| An array literal [], or any instance of Array
 'function'		| Any function or instance of Function
-'regexp'			| /Any/ regular expression literal, or any instance of RegExp
+'regexp'			| Any regular expression literal, or any instance of RegExp
 'date'			| Any instance of Date
 
 ___
