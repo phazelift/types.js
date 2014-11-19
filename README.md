@@ -27,11 +27,11 @@ Force!
 Force some value to be of some type. A replacement value can be given in case value is invalid, without replacement
 a literal of that type is returned (except for Number).
 
-A quick example to show how we can safely call a function with forceFunction:
+A quick example to show how we can safely call a function that needs to pass a number argument, first in standard JS, next with
+types.js force methods:
 ```javascript
 var left= '500px';
 var callback= null;
-// now some lines of code to be save:
 if ( typeof left !== 'number' ){
  		left= parseInt( left, 10 );
  }
@@ -44,7 +44,8 @@ if ( typeof callback !== 'function' ){
 	callback= function(){}
 }
 callback( left );
-// 2 lines of code with force, and a better read if you ask me:
+
+// now with force, exactly the same result:
 left=  _.forceNumber( left, 100 );
 _.forceFunction( callback )( left );
 // see below for more examples
