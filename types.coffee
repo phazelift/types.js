@@ -96,8 +96,9 @@ Types.typeof= ( value ) ->
 	for name, predicate of TYPES
 		return name.toLowerCase() if predicate(value) is true
 
-if ( 'function' is typeof define ) and define.amd
+if define? and ( 'function' is typeof define ) and define.amd
 	define 'types', [], -> Types
-
-if typeof window isnt 'undefined' then window.Types= Types
-else if typeof module isnt 'undefined' then module.exports= Types
+else if typeof window isnt 'undefined'
+	window.Types= Types
+else if typeof module isnt 'undefined'
+	module.exports= Types

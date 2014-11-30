@@ -159,13 +159,11 @@
     }
   };
 
-  if (('function' === typeof define) && define.amd) {
+  if ((typeof define !== "undefined" && define !== null) && ('function' === typeof define) && define.amd) {
     define('types', [], function() {
       return Types;
     });
-  }
-
-  if (typeof window !== 'undefined') {
+  } else if (typeof window !== 'undefined') {
     window.Types = Types;
   } else if (typeof module !== 'undefined') {
     module.exports = Types;
