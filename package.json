@@ -1,6 +1,6 @@
 {
-  "name": "types-js",
-  "version": "1.4.2",
+  "name": "types.js",
+  "version": "1.4.4",
   "description": "A tiny (1.8kb), essential Javascript type-check library",
   "main": "types.min.js",
   "scripts": {

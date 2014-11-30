@@ -1,7 +1,7 @@
 types.js
 ========
 <br/>
-A tiny(1.8Kb), essential Javascript type checking library.
+A tiny(1.9Kb), essential Javascript type checking library.
 
 - fixes NaN, array, null, etc..
 - checks one or multiple arguments at once
@@ -53,6 +53,20 @@ _.forceFunction( callback )( left );
 Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
 ___
 For use with node.js you can install with `npm install types.js`
+
+When using AMD, you can load types.js like so:
+```javascript
+require.config({
+	paths: {
+		'types', [ '../path/to/types.min' ]
+	}
+});
+
+require( ['types'], function( Types ){
+	console.log Types.isNumber 0
+	// true
+});
+```
 ___
 
 Basic usage:
@@ -231,7 +245,7 @@ console.log( func === showAuthor );
 // true
 
 // now func will again become equal to showAuthor because forceFunction will
-// return showAuthor, as replacement is the only valid function found:
+// return showAuthor as replacement is the only valid function found:
 var func= _.forceFunction( brokenFunc, showAuthor );
 console.log( func === showAuthor );
 // true
@@ -244,11 +258,11 @@ func();
 
 // as in the example above you can see that because forceFunction always returns
 // a callable function you can safely call in one go like this:
-_.forceFunction( showAuthor )( 'Dennis Raymondo' );
-// Author: Dennis Raymondo
+_.forceFunction( brokenFunc, showAuthor )( 'Dennis' );
+// Author: Dennis
 
 // now we call with two invalid functions:
-_.forceFunction( brokenFunc, brokenFunc )( 'Dennis Raymondo' );
+_.forceFunction( brokenFunc, brokenFunc )( 'Dennis' );
 //
 // the empty dummy-function was called, no crash
 ```
@@ -350,7 +364,14 @@ forceFunction	| function(){}
 ___
 change log
 ==========
+**1.4.4**
 
+Added AMD support, you can now:
+```javascript
+require ['types'], ( Types ) ->
+```
+with require.js for example.
+___
 **1.4.2**
 
 Optimized and reworked the codebase, and some adjustments to tests.
@@ -365,7 +386,7 @@ types.js will return 'defined' on that one if I would not take action and implem
 
 Updated the readme.
 
-__________________________________________
+___
 **1.3.5**
 
 Changed:

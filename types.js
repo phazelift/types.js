@@ -90,7 +90,7 @@
           }
           break;
         default:
-          if (_['is' + type](value)) {
+          if (Types['is' + type](value)) {
             return value;
           }
       }
@@ -158,6 +158,12 @@
       }
     }
   };
+
+  if (('function' === typeof define) && define.amd) {
+    define('types', [], function() {
+      return Types;
+    });
+  }
 
   if (typeof window !== 'undefined') {
     window.Types = Types;

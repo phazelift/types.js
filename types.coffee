@@ -58,7 +58,7 @@ createForce= ( type ) ->
 		switch type
 			when 'Number' then return value if (_.isNumber value= parseInt value, _.parseIntBase) and not value.void
 			when 'String' then return value+ '' if _.isStringOrNumber value
-			else return value if _[ 'is'+ type ] value
+			else return value if Types[ 'is'+ type ] value
 
 	# the forctType method, returns the type's defaultValue, if both value and replacement are not of, or convertible to, type
 	return ( value, replacement ) ->
@@ -75,7 +75,7 @@ testValues= ( predicate, breakState, values= [] ) ->
 		return breakState if predicate(value) is breakState
 	return not breakState
 
-# generate all the is/not/has/all/force _
+# generate all the is/not/has/all/force'Types'
 breakIfEqual= true
 do -> for name, predicate of TYPES then do ( name, predicate ) ->
 	Types[ 'is'+ name ]	= predicate
@@ -85,9 +85,19 @@ do -> for name, predicate of TYPES then do ( name, predicate ) ->
 	# create only forceType of types found in LITERALS
 	Types[ 'force'+ name ]= createForce name if name of LITERALS
 
+	# maybe implement this one..:
+	# getFirst'Type' returns the first argument that is of type 'Type'
+	#
+	# Types[ 'getFirst'+ name ]= ( values... ) ->
+	# 	for value in values
+	# 		return value if Types[ 'is'+ name ] value
+
 Types.typeof= ( value ) ->
 	for name, predicate of TYPES
 		return name.toLowerCase() if predicate(value) is true
+
+if ( 'function' is typeof define ) and define.amd
+	define 'types', [], -> Types
 
 if typeof window isnt 'undefined' then window.Types= Types
 else if typeof module isnt 'undefined' then module.exports= Types
