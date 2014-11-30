@@ -52,8 +52,10 @@ _.forceFunction( callback )( left );
 ```
 Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
 ___
+**node.js**
 For use with node.js you can install with `npm install types.js`
 
+**AMD**
 When using AMD, you can load types.js like so:
 ```javascript
 require.config({
@@ -63,7 +65,7 @@ require.config({
 });
 
 require( ['types'], function( Types ){
-	console.log Types.isNumber 0
+	console.log( Types.isNumber(0) );
 	// true
 });
 ```
