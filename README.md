@@ -1,7 +1,7 @@
 types.js
 ========
 <br/>
-A tiny(1.9Kb), essential Javascript type checking library.
+A tiny(1.9Kb) Javascript type checker/enforcer library.
 
 - fixes NaN, array, null, etc..
 - checks one or multiple arguments at once
