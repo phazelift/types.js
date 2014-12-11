@@ -1,7 +1,7 @@
 types.js
 ========
 <br/>
-A tiny(1.9Kb) Javascript type checker/enforcer library.
+A tiny (2.2Kb) Javascript type checker/enforcer library.
 
 - fixes NaN, array, null, etc..
 - checks one or multiple arguments at once
@@ -18,6 +18,8 @@ _.typeof( parseInt('Not A Number!') );		// 'nan'
 _.forceString( 123 );						// '123'
 _.forceNumber( '123mm' );					// 123
 _.forceNumber( 'use next arg..', 123 );		// 123
+_.intoArray( '1 2 3' );						// ['1', '2', '3']
+_.intoArray( '1', '2', '3' );				// ['1', '2', '3']
 _.allDefined( 'good', false, 0 );			// true
 _.hasObject( 'not', 'really' );				// false
 // there is much more, see below.
@@ -30,24 +32,28 @@ a literal of that type is returned (except for Number).
 A quick example to show how we can safely call a function that needs to pass a number argument, first in standard JS, next with
 types.js force methods:
 ```javascript
-var left= '500px';
-var callback= null;
-if ( typeof left !== 'number' ){
- 		left= parseInt( left, 10 );
- }
+var left		= '500px'
+	,callback	= null
+;
+
+if ( typeof left !== 'number' )
+ 	left= parseInt( left, 10 );
+
 // check for parseInt returning NaN..
-if ( left !== left || typeof left !== 'number' ){
+if ( left !== left || typeof left !== 'number' )
 	left= 100;
-}
+
 // be safe before calling the function
-if ( typeof callback !== 'function' ){
+if ( typeof callback !== 'function' )
 	callback= function(){}
-}
+
+// now we can call safely
 callback( left );
 
-// now with force, exactly the same result:
+// 2 lines with force, exactly the same result:
 left=  _.forceNumber( left, 100 );
 _.forceFunction( callback )( left );
+
 // see below for more examples
 ```
 Check it out, it's sweet! I've added force to types.js because I use it all the time and it seems to belong in here.
@@ -85,12 +91,13 @@ Basic usage:
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
 ___
 
-**some more examples:**
+**more examples:**
 ```javascript
 var _= Types;									// browser
 var _= require( 'types.js' );					// in node.js with npm
 
 var x;
+
 // initialize a variable and be sure what type it will have in any case:
 _.forceString();								// '' (empty String)
 _.forceString( null, 'ok' );					// 'ok' (as String)
@@ -102,6 +109,7 @@ _.forceBoolean('35px');							// false (as Boolean)
 _.forceArray("you'll get an array!");			// []
 
 var func= null;
+
 // call a function that might not exist anymore:
 _.forceFunction( func )( 'arguments for func, or replacement' );
 // no crash, default empty function is called, returns undefined
@@ -109,7 +117,7 @@ _.forceFunction( func )( 'arguments for func, or replacement' );
 // some default type checking:
 _.isDefined()									// false
 _.isString( 'Hello types.js!' );				// true
-_.isString( 23456 );								// false
+_.isString( 23456 );							// false
 _.isBoolean( false );							// true
 _.isArray( [1,2,3] );							// true
 _.isObject( [1,2,3] );							// false
@@ -139,6 +147,7 @@ _.typeof( [1,2,3] );									// 'array'
 _.typeof( null );										// 'null'
 _.typeof( parseInt('generate NaN') );					// 'nan'
 _.typeof( new Date() );									// 'date'
+
 // etc..
 ```
 ___
@@ -269,6 +278,41 @@ _.forceFunction( brokenFunc, brokenFunc )( 'Dennis' );
 // the empty dummy-function was called, no crash
 ```
 ___
+**Types.intoArray**
+> `<array> Types.intoArray( <any type> arg1, ..., argN )`
+
+intoArray is a convenience method I use mostly for flexible arguments passing, but can also be used to split
+space delimited strings into an array in a non-sparse way (destructing spaces).
+
+It accepts 3 kinds of arguments:
+
+kind							|input								|result
+------------------------|-----------------------------|--------------
+space delimited strings	|'This is intoArray!'			|['This', 'is', 'intoArray!']
+multiple arguments		|'This', 'is', 'intoArray!'	|['This', 'is', 'intoArray!']
+array							|['This', 'is', 'intoArray!']	|['This', 'is', 'intoArray!']
+
+All generating the same forced array.
+```javascript
+function testArgs( arg1, ..., argN ){
+
+	// need to .apply with context for all arguments to pass
+	var array= _.intoArray.apply( this, arguments );
+	console.log( array );
+}
+
+testArgs( 'This', 'is', 'intoArray!' );
+// [ 'This', 'is', 'intoArray!' ]
+
+testArgs( ['This', 'is', 'intoArray!'] );
+// [ 'This', 'is', 'intoArray!' ]
+
+testArgs( 'This is intoArray!' );
+// [ 'This', 'is', 'intoArray!' ]
+```
+For space delimited string parsing, all strings are trimmed and reduced to one consecutive space
+to avoid a sparse array.
+___
 **Types.typeof**
 > `<String> Types.typeof( value )`
 
@@ -366,6 +410,12 @@ forceFunction	| function(){}
 ___
 change log
 ==========
+
+**1.5.0**
+
+Added .intoArray method.
+
+___
 **1.4.4**
 
 Added AMD support.
