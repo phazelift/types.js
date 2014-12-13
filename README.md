@@ -1,12 +1,12 @@
 types.js
 ========
 <br/>
-A tiny (2.2Kb) Javascript type checker/enforcer library.
+A tiny (2.2kB) Javascript type checker/enforcer library.
 
 - fixes NaN, array, null, etc..
 - checks one or multiple arguments at once
 - 4 convenience forms: isNumber, notNumber, hasNumber and allNumber (with any type of choice)
-- can force a value to be of some type, with optional value if conversion is not possible
+- can force a value to be of some type, with optional value if conversion fails
 
 ___
 **A few quick examples:**
@@ -29,8 +29,8 @@ Force!
 Force some value to be of some type. A replacement value can be given in case value is invalid, without replacement
 a literal of that type is returned (except for Number).
 
-A quick example to show how we can safely call a function that needs to pass a number argument, first in standard JS, next with
-types.js force methods:
+A quick example to show how we can safely call a function that needs to pass a number argument, first in
+standard JS, next with types.js force methods:
 ```javascript
 var left		= '500px'
 	,callback	= null
@@ -60,18 +60,17 @@ Check it out, it's sweet! I've added force to types.js because I use it all the 
 ___
 **node.js**
 For use with node.js you can install with `npm install types.js`
-
+___
 **AMD**
-When using AMD, you can load types.js like so:
 ```javascript
 require.config({
 	paths: {
-		'types', [ 'path/to/types.min' ]
+		'types', [ 'path/to/types.min(.js)' ]
 	}
 });
 
-require( ['types'], function( Types ){
-	console.log( Types.isNumber(0) );
+require( ['types'], function( _ ){
+	console.log( _.isNumber(0) );
 	// true
 });
 ```
@@ -89,9 +88,11 @@ Basic usage:
 **has'Type'** is useful for checking if one or more arguments are of a certain type.
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
+
+**intoArray** Converts arguments or space delimited strings into an array.
 ___
 
-**more examples:**
+**some more examples:**
 ```javascript
 var _= Types;									// browser
 var _= require( 'types.js' );					// in node.js with npm
@@ -107,11 +108,14 @@ _.forceNumber('35px');							// 35 (as Number)
 _.forceNumber( true, 0 );						// 0 (as Number)
 _.forceBoolean('35px');							// false (as Boolean)
 _.forceArray("you'll get an array!");			// []
+_.intoArray( 'hi', 'there' );					// [ 'hi', 'there' ]
+_.intoArray( ' hi   there ' );					// [ 'hi', 'there' ]
+_.intoArray( '', 0, {}, [] );					// [ '', 1, {}, [] ]
 
 var func= null;
 
 // call a function that might not exist anymore:
-_.forceFunction( func )( 'arguments for func, or replacement' );
+_.forceFunction( func )( 'arguments for func' );
 // no crash, default empty function is called, returns undefined
 
 // some default type checking:
