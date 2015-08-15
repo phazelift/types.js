@@ -1,7 +1,7 @@
 {
   "name": "types.js",
-  "version": "1.5.0",
-  "description": "A tiny (1.9kb) Javascript type checker/enforcer library",
+  "version": "1.5.2",
+  "description": "A tiny (~2kb) Javascript type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,7 +28,5 @@
   "bugs": {
     "url": "https://github.com/phazelift/types.js/issues"
   },
-  "homepage": "https://github.com/phazelift/types.js",
-  "dependencies": {},
-  "devDependencies": {}
+  "homepage": "https://github.com/phazelift/types.js"
 }

@@ -98,22 +98,17 @@ do -> for name, predicate of TYPES then do ( name, predicate ) ->
 	# create only forceType of types found in LITERALS
 	Types[ 'force'+ name ]= createForce name if name of LITERALS
 
-	# maybe implement this one..:
-	# getFirst'Type' returns the first argument that is of type 'Type'
-	#
-	# Types[ 'getFirst'+ name ]= ( values... ) ->
-	# 	for value in values
-	# 		return value if Types[ 'is'+ name ] value
+	Types[ 'getFirst'+ name ]= ( values... ) ->
+		for value in values
+			return value if Types[ 'is'+ name ] value
 
 
 Types.intoArray= ( args... ) ->
-
 	if args.length < 2
 
 		if _.isString args[ 0 ]
 			# to string, trim, limit to one consecutive space, back to array
 			args= args.join( '' ).replace( /^\s+|\s+$/g, '' ).replace( /\s+/g, ' ' ).split ' '
-
 		else if _.isArray args[ 0 ]
 			args= args[ 0 ]
 
@@ -130,8 +125,8 @@ Types.typeof= ( value ) ->
 if define? and ( 'function' is typeof define ) and define.amd
 	define 'types', [], -> Types
 
-else if typeof window isnt 'undefined'
-	window.Types= Types
-
-else if typeof module isnt 'undefined'
+if typeof module isnt 'undefined'
 	module.exports= Types
+
+if typeof window isnt 'undefined'
+	window.Types= Types
