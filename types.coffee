@@ -19,9 +19,19 @@
 
 # heavily refactored to reduce size while optimizing for speed, at the cost of readability..
 
+
+# use dummy log for forceTypes until logging is enabled by user
+log= ->
+
+# used for forceTypes logging
+logPrefix	= 'types.js - force'
+
+
+
 instanceOf	= ( type, value ) -> value instanceof type
 # type defaults to object, for internal can do, saves for a few bytes..
 typeOf		= ( value, type= 'object' ) -> typeof value is type
+
 
 LITERALS=
 	'Boolean'	: false
@@ -33,6 +43,9 @@ LITERALS=
 		number= new Number
 		number.void= true
 		return number
+	'RegExp'		: new RegExp
+
+
 
 TYPES=
 	'Undefined'		: ( value ) -> value is undefined
@@ -50,9 +63,19 @@ TYPES=
 
 TYPES.StringOrNumber= (value) -> TYPES.String(value) or TYPES.Number(value)
 
-Types= _=
+
+
+# define the main object that this module will return
+Types= types=
+
 	# used by forceNumber to set the Radix, defaults to decimals
 	parseIntBase: 10
+
+	logForce: ( logger ) ->
+		return log= logger if types.isFunction logger
+		return log= types.forceFunction(console.log) if types.isObject console
+
+
 
 
 createForce= ( type ) ->
@@ -60,16 +83,25 @@ createForce= ( type ) ->
 	# convert value in case initial type test failed. failed conversion returns undefined
 	convertType= ( value ) ->
 		switch type
-			when 'Number' then return value if (_.isNumber value= parseInt value, _.parseIntBase) and not value.void
-			when 'String' then return value+ '' if _.isStringOrNumber value
+			when 'Number' then return value if (types.isNumber value= parseInt value, types.parseIntBase) and not value.void
+			when 'String' then return value+ '' if types.isStringOrNumber value
 			else return value if Types[ 'is'+ type ] value
 
 	# the forctType method, returns the type's defaultValue, if both value and replacement are not of, or convertible to, type
 	return ( value, replacement ) ->
 
+		valueType= types.typeof value
 		return value if value? and undefined isnt value= convertType value
-		return replacement if replacement? and undefined isnt replacement= convertType replacement
+		log logPrefix+ type+ ': invalid first argument with type: \''+ valueType+ '\''
+
+		if types.isDefined replacement
+			replacementType= types.typeof replacement
+			return replacement if replacement? and undefined isnt replacement= convertType replacement
+			log logPrefix+ type+ ': invalid second argument with type: \''+ replacementType+ '\''
+
+		log logPrefix+ type+ ': forcing return value to type '+ type
 		return LITERALS[ type ]
+
 
 
 
@@ -84,6 +116,7 @@ testValues= ( predicate, breakState, values= [] ) ->
 		return breakState if predicate(value) is breakState
 
 	return not breakState
+
 
 
 # generate all the is/not/has/all/force'Types'
@@ -103,13 +136,14 @@ do -> for name, predicate of TYPES then do ( name, predicate ) ->
 			return value if Types[ 'is'+ name ] value
 
 
+
 Types.intoArray= ( args... ) ->
 	if args.length < 2
 
-		if _.isString args[ 0 ]
+		if types.isString args[ 0 ]
 			# to string, trim, limit to one consecutive space, back to array
 			args= args.join( '' ).replace( /^\s+|\s+$/g, '' ).replace( /\s+/g, ' ' ).split ' '
-		else if _.isArray args[ 0 ]
+		else if types.isArray args[ 0 ]
 			args= args[ 0 ]
 
 	return args
@@ -119,6 +153,7 @@ Types.intoArray= ( args... ) ->
 Types.typeof= ( value ) ->
 	for name, predicate of TYPES
 		return name.toLowerCase() if predicate( value ) is true
+
 
 
 

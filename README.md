@@ -1,7 +1,7 @@
 types.js
 ========
 <br/>
-A tiny (~2kB) Javascript type checker/enforcer library.
+A tiny (~2.5kB) Javascript type checker/enforcer library.
 
 - fixes NaN, array, null, etc..
 - checks one or multiple arguments at once
@@ -286,6 +286,19 @@ types.forceFunction( brokenFunc, brokenFunc )( 'Dennis' );
 //
 // the empty dummy-function was called, no crash
 ```
+
+
+**Types.logForce**
+> `<undefined> logForce( <Function> logger )`
+
+You can call Types.logForce(); to turn on console logging for failed conversions of forceTypes. If you prefer a more advanced logger than the basic provided console.log, you can simply pass that logger as argument.
+```javascript
+types.logForce();
+var result= types.forceString( [], 'ok' );
+// types.js - forceString, cannot convert type 'array' to String, trying replacement value now
+console.log( result );
+// ok
+```
 ___
 **Types.intoArray**
 > `<array> Types.intoArray( <any type> arg1, ..., argN )`
@@ -416,10 +429,24 @@ forceNumber		| a new Number with a .void property set to true
 forceObject		| {}
 forceArray		| []
 forceFunction	| function(){}
+forceRegExp		| /(?:)/
 ___
 change log
 ==========
 
+
+
+**1.6.0**
+
+- adds forceRegExp
+- adds logForce, now we can show a log when forceTypes encounters a type mismatch
+- updates readme
+
+___
+**1.5.3**
+
+adds getFirst<Type>, returning the first found argument of a specific type
+___
 **1.5.1**
 
 Some minor changes to this readme
