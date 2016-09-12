@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "A tiny (~2.5kb) Javascript type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
@@ -24,7 +24,7 @@
     "all"
   ],
   "author": "Dennis Raymondo <phazelift@gmail.com> (https://github.com/phazelift/)",
-  "license": "GPL-3",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/phazelift/types.js/issues"
   },

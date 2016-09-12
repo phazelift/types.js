@@ -15,17 +15,29 @@ ___
 ```javascript
 var types= require( 'types.js' );
 
-types.typeof( [] );								// 'array'
-types.typeof( null );							// 'null'
-types.typeof( /someregexp/ );					// 'regexp'
-types.typeof( parseInt('Not A Number!') );		// 'nan'
-types.forceString( 123 );						// '123'
-types.forceNumber( '123mm' );					// 123
-types.forceNumber( 'use next arg..', 123 );		// 123
-types.intoArray( '1 2 3' );						// ['1', '2', '3']
-types.intoArray( '1', '2', '3' );				// ['1', '2', '3']
-types.allDefined( 'good', false, 0 );			// true
-types.hasObject( 'not', 'really' );				// false
+types.typeof( [] );
+// 'array'
+types.typeof( null );					
+// 'null'
+types.typeof( /someregexp/ );					
+// 'regexp'
+types.typeof( parseInt('Not A Number!') );		
+// 'nan'
+types.forceString( 123 );					
+// '123'
+types.forceNumber( '123mm' );				
+// 123
+types.forceNumber( 'use next arg..', 123 );		
+// 123
+types.intoArray( '1 2 3' );				
+// ['1', '2', '3']
+types.intoArray( '1', '2', '3' );				
+// ['1', '2', '3']
+types.allDefined( 'good', false, 0 );			
+// true
+types.hasObject( 'not', 'really' );				
+// false
+
 // there is much more, see below.
 ```
 Force!
@@ -98,24 +110,35 @@ ___
 
 **some more examples:**
 ```javascript
-var types= Types;									// browser
-// or:
-var types= require( 'types.js' );					// in node.js with npm
-
-var x;
+// browser
+var types= Types;
+// in node.js with npm
+var types= require( 'types.js' );
 
 // initialize a variable and be sure what type it will have in any case:
-types.forceString();								// '' (empty String)
-types.forceString( null, 'ok' );					// 'ok' (as String)
-types.forceString( null, [1, 2, 3] );				// '' (empty String)
-types.forceString(33, 'not used');					// '33' (as String)
-types.forceNumber('35px');							// 35 (as Number)
-types.forceNumber( true, 0 );						// 0 (as Number)
-types.forceBoolean('35px');							// false (as Boolean)
-types.forceArray("you'll get an array!");			// []
-types.intoArray( 'hi', 'there' );					// [ 'hi', 'there' ]
-types.intoArray( ' hi   there ' );					// [ 'hi', 'there' ]
-types.intoArray( '', 0, {}, [] );					// [ '', 1, {}, [] ]
+var x;
+types.forceString( x );
+// '' (empty String)
+types.forceString( null, 'ok' );					
+// 'ok' (as String)
+types.forceString( null, [1, 2, 3] );				
+// '' (empty String)
+types.forceString(33, 'not used');					
+// '33' (as String)
+types.forceNumber('35px');							
+// 35 (as Number)
+types.forceNumber( true, 0 );						
+// 0 (as Number)
+types.forceBoolean('35px');							
+// false (as Boolean)
+types.forceArray("you'll get an array!");			
+// []
+types.intoArray( 'hi', 'there' );					
+// [ 'hi', 'there' ]
+types.intoArray( ' hi   there ' );					
+// [ 'hi', 'there' ]
+types.intoArray( '', 0, {}, [] );					
+// [ '', 1, {}, [] ]
 
 var func= null;
 
@@ -124,38 +147,64 @@ types.forceFunction( func )( 'arguments for func' );
 // no crash, default empty function is called, returns undefined
 
 // some default type checking:
-types.isDefined()									// false
-types.isString( 'Hello types.js!' );				// true
-types.isString( 23456 );							// false
-types.isBoolean( false );							// true
-types.isArray( [1,2,3] );							// true
-types.isObject( [1,2,3] );							// false
-types.isObject( /myRegExp/g );						// false
-types.isNaN( parseInt('generate NaN') );			// true
+types.isDefined()									
+// false
+types.isString( 'Hello types.js!' );				
+// true
+types.isString( 23456 );							
+// false
+types.isBoolean( false );							
+// true
+types.isArray( [1,2,3] );							
+// true
+types.isObject( [1,2,3] );							
+// false
+types.isObject( /myRegExp/g );						
+// false
+types.isNaN( parseInt('generate NaN') );			
+// true
 
-types.notNull('');									// true
-types.notUndefined( undefined );					// false
-types.isDefined( null );							// true
+types.notNull('');									
+// true
+types.notUndefined( undefined );					
+// false
+types.isDefined( null );							
+// true
 
 // check multiple values in one call:
-types.allString( '', " ", 'with text' );					// true
-types.allString( '', ' ', 'with text', 123 );				// false
-types.allStringOrNumber( '', ' ', 'with text', 123 );		// true
-types.allObject( { key: 'nice' }, [], /regexp/ig );			// false
-types.allArray( [1,2,3], [{}], new RegExp('stop') );		// false
-types.allArray( [1,2,3], [{}], [false, true] );				// true
+types.allString( '', " ", 'with text' );					
+// true
+types.allString( '', ' ', 'with text', 123 );				
+// false
+types.allStringOrNumber( '', ' ', 'with text', 123 );		
+// true
+types.allObject( { key: 'nice' }, [], /regexp/ig );			
+// false
+types.allArray( [1,2,3], [{}], new RegExp('stop') );		
+// false
+types.allArray( [1,2,3], [{}], [false, true] );				
+// true
 
-types.hasString( 123, { value: 'nice' }, ['?'] );			// false
-types.hasStringOrNumber( [1,2], /reg/, 'true' )				// true
-types.hasFunction( 123, { value: 'nice' }, function(){} );	// true
-types.hasUndefined( 'render false!', 123, null );			// false
-types.hasUndefined( 'render true!', 123, undefined );		// true
+types.hasString( 123, { value: 'nice' }, ['?'] );			
+// false
+types.hasStringOrNumber( [1,2], /reg/, 'true' )				
+// true
+types.hasFunction( 123, { value: 'nice' }, function(){} );	
+// true
+types.hasUndefined( 'render false!', 123, null );			
+// false
+types.hasUndefined( 'render true!', 123, undefined );		
+// true
 
 // check for a types.js type definition, returns lowercase string:
-types.typeof( [1,2,3] );									// 'array'
-types.typeof( null );										// 'null'
-types.typeof( parseInt('generate NaN') );					// 'nan'
-types.typeof( new Date() );									// 'date'
+types.typeof( [1,2,3] );									
+// 'array'
+types.typeof( null );										
+// 'null'
+types.typeof( parseInt('generate NaN') );					
+// 'nan'
+types.typeof( new Date() );									
+// 'date'
 
 // etc..
 ```
@@ -436,6 +485,11 @@ change log
 
 
 
+**1.6.1**
+
+- changed license to MIT
+___
+
 **1.6.0**
 
 - adds forceRegExp
@@ -522,3 +576,9 @@ Added:
 - is/not/has/allDefined<br/>
 Now you can: `if (types.isDefined(value) )`<br/>
 instead of `if (types.notUndefined(value) )`
+
+---
+
+###license
+
+MIT
