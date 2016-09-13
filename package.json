@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "A tiny (~2.5kb) Javascript type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
