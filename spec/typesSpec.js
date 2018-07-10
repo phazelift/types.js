@@ -1,6 +1,11 @@
 //
 // Jasmine tests for types.js
 //
+const Types= require( '../types.js' );
+
+Types.disableLogging()
+
+
 
 
 describe("forceNumber(value, replacement)", function() {
@@ -53,6 +58,27 @@ describe("forceNumber(value, replacement)", function() {
     result= typeof Types.forceNumber( '123abc', 0 );
     expect( result ).toBe( 'number' );
 
+  });
+});
+
+
+
+describe("forceNumber(value, replacement)", function() {
+
+  it("should not auto-convert strings when types.autoConvert is set to false", function(){
+
+    Types.autoConvert= false;
+
+    result= Types.forceNumber( '1' );
+    expect( result ).not.toBe( 1 );
+
+    result= Types.forceNumber( '123', 'abc123' );
+    expect( result ).not.toBe( 123 );
+
+    result= Types.forceNumber( '6', 5 );
+    expect( result ).toBe( 5 );
+
+    Types.autoConvert= true;
   });
 });
 
@@ -121,11 +147,6 @@ describe("forceNumber(value, replacement)", function() {
 describe("isDefined( value )", function() {
 
   it("should return false if value is undefined or no argument is given", function(){
-
-    var undef= undefined;
-
-    result= Types.isDefined( undef );
-    expect( result ).toBe( false );
 
     result= Types.isDefined();
     expect( result ).toBe( false );
@@ -282,6 +303,8 @@ describe("isString( value )", function() {
 
     });
 });
+
+
 
 describe("isNumber( value )", function() {
 
@@ -2348,7 +2371,23 @@ describe("forceString( value )", function() {
 
     });
 
+
+
+    it("should not auto-convert numbers when types.autoConvert is set to false", function(){
+
+        Types.autoConvert= false;
+
+        result= typeof Types.forceString( 1 );
+        expect( result ).not.toBe( '1' );
+
+        result= typeof Types.forceString( 1, 2 );
+        expect( result ).not.toBe( '2' );
+
+        Types.autoConvert= true;
+    });
+
 });
+
 
 describe("forceNumber( value )", function() {
 
@@ -2884,30 +2923,127 @@ describe("forceFunction( value )", function() {
 
     it("should return the second argument as a Function(if it is a Function), when the first argument is not of type Function", function(){
         // Object is a function..
-        result= Types.forceFunction( 123, Object  );
-        expect( result ).toBe( Object );
+        result= Types.forceFunction( 123, function(){}  );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( 'string', Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( [1,2,3], Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( new Date(), Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( null, Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( NaN, Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( /asdf/, Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
         result= Types.forceFunction( undefined, Object  );
-        expect( result ).toBe( Object );
+        expect( Types.typeof(result) ).toBe( 'function' );
 
       });
 
 });
+
+
+//
+//  enum
+//
+describe( "enum( items, offset )", function(){
+
+    const COLORS= [ 'RED', 'GREEN', 'BLUE' ];
+
+
+    it( "should always return an object", function(){
+
+        result= Types.enum();
+        expect( Types.typeof(result) ).toBe( 'object' );
+
+        result= Types.enum( new Date, '?' );
+        expect( Types.typeof(result) ).toBe( 'object' );
+    });
+
+
+    it( "types.isEnum should return true when tested on a with types.js created enum", function(){
+        const colors= Types.enum( COLORS );
+        expect( Types.isEnum(colors) ).toBe( true );
+    });
+
+
+    it( "should return an object with the same amount of key's as items given in 'items'", function(){
+
+        const colors    = Types.enum( COLORS );
+        const count     = Object.keys( colors ).length;
+        expect( COLORS.length ).toBe( count );
+    });
+
+
+    it( "should ignore non-string type items", function(){
+
+        const containsNonStrings= COLORS.concat( [1, [], new Date] );
+        const colors       = Types.enum( containsNonStrings );
+        const colorsLength = Object.keys( colors ).length;
+
+        expect( COLORS.length ).toBe( colorsLength );
+    });
+
+
+    it( "should return keys with its proper index as value", function(){
+
+        const colors= Types.enum( COLORS );
+
+        expect( colors.RED ).toBe( 0 );
+        expect( colors.GREEN ).toBe( 1 );
+        expect( colors.BLUE ).toBe( 2 );
+    });
+
+
+    it( "should return keys with its proper index as value, also relative to a provided offset", function(){
+
+        const colors= Types.enum( COLORS, 10 );
+
+        expect( colors.RED ).toBe( 10 );
+        expect( colors.GREEN ).toBe( 11 );
+        expect( colors.BLUE ).toBe( 12 );
+    });
+
+
+    it( "should return an immutable object", function(){
+
+        const colors= Types.enum( COLORS );
+        colors.SHOULD_BE_IGNORED= '!';
+
+        const count= Object.keys( colors ).length;
+        expect( COLORS.length ).toBe( count );
+
+        colors.RED= '?';
+        expect( colors.RED ).toBe( 0 );
+
+        delete colors.GREEN;
+        expect( colors.GREEN ).toBe( 1 );
+    });
+
+});
+
+
+
+it( "should equal aliases", function(){
+
+    expect( Types.enum ).toEqual( Types.enumerate );
+    expect( Types.typeof ).toEqual( Types.typeOf );
+
+});
+
+it( "should set the defaults right", function(){
+
+    expect( Types.parseIntBase ).toBe( 10 );
+    expect( Types.autoConvert ).toBe( true );
+
+});
+

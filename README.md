@@ -1,74 +1,115 @@
 types.js
 ========
 <br/>
-A tiny (~2.5kB) Javascript type checker/enforcer library.
 
-- fixes NaN, array, null, etc..
-- checks one or multiple arguments at once
-- 4 convenience forms: isNumber, notNumber, hasNumber and allNumber (with any type of choice)
-- can force a value to be of some type, with optional value if conversion fails
+**A tiny and fast dynamic type checker/enforcer library.**
 
 <br/>
-___
-**A few quick examples:**
+
+**Why**
+
+Because dynamic type checking is often more powerful, simple and safe compared to static type checking.
+```javascript
+// even with TypeScript I'd never do:
+function filter( arr: array ){
+	arr.map( (value) => do stuff with value.. )
+}
+// because there is NO TypeScript at run time!
+// if for untested reason the type of arr at run time is
+// something like null, your app will crash in all its glory
+
+// I prefer 100% safety at all times, functional and readable:
+forceArray(arr).map( (value) => do stuff with value.. )
+```
+
+<br/>
+
+**Performance**
+
+The performance penalty is negligible for the majority of operations.
+
+<br/>
+
+**Features**
+
+- introduces new types and a typeof replacement for proper type assessment
+- fixes NaN, array, null, etc..
+- can check one or multiple values at once
+- 4 convenience forms: is[type], not[type], has[type] and all[type]
+- force any return value to be of any specific type
+- create immutable 'enum' objects
+- battle tested
+
+<br/>
+
+**Some examples**
 
 ```javascript
-var types= require( 'types.js' );
+const { enumerate, typeOf, forceString, forceNumber, intoArray, allDefined,
+	hasObject }	= require( 'types.js' );
 
-types.typeof( [] );
+const COLORS= enumerate( ['RED', 'GREEN', 'BLUE'] );
+console.log( COLORS.BLUE );
+// 2
+
+typeOf( [] );
 // 'array'
-types.typeof( null );					
+typeOf( null );
 // 'null'
-types.typeof( /someregexp/ );					
+typeOf( /someregexp/ );
 // 'regexp'
-types.typeof( parseInt('Not A Number!') );		
+typeOf( parseInt('Not A Number!') );
 // 'nan'
-types.forceString( 123 );					
+
+// auto convert/parse number to string or vice versa if possible
+forceString( 123 );
 // '123'
-types.forceNumber( '123mm' );				
+forceNumber( '123mm' );
 // 123
-types.forceNumber( 'use next arg..', 123 );		
+forceNumber( 'use next arg..', 123 );
 // 123
-types.intoArray( '1 2 3' );				
+
+intoArray( '1 2 3' );
 // ['1', '2', '3']
-types.intoArray( '1', '2', '3' );				
+intoArray( '1', '2', '3' );
 // ['1', '2', '3']
-types.allDefined( 'good', false, 0 );			
+
+allDefined( 'good', false, 0 );
 // true
-types.hasObject( 'not', 'really' );				
+hasObject( 'not', 'really' );
 // false
 
 // there is much more, see below.
 ```
+
 Force!
 ------
-Force some value to be of some type. A replacement value can be given in case value is invalid, without replacement
-a literal of that type is returned (except for Number).
+Force a value to be of a specific type. A replacement value can be given (as second argument) for in case the first provided value is incompatible. If none of the given values is compatible a literal of that type is returned (except for Number).
 
-A quick example to show how we can safely call a function that needs to pass a number argument, first in
-standard JS, next with types.js force methods:
+For example a look at how we can safely call a function that needs to pass a number argument, first in
+"standard" JS, next with types.js force methods:
 ```javascript
-var left		= '500px'
-	,callback	= null
-;
 
-if ( typeof left !== 'number' )
- 	left= parseInt( left, 10 );
+function test( left, callback ){
+	const DEFAULT_LEFT= 500;
 
-// check for parseInt returning NaN..
-if ( left !== left || typeof left !== 'number' )
-	left= 100;
+	if ( typeof left !== 'number' )
+	 	left= parseInt( left, 10 );
 
-// be safe before calling the function
-if ( typeof callback !== 'function' )
-	callback= function(){}
+	// check for parseInt returning NaN..
+	if ( left !== left || typeof left !== 'number' )
+		left= DEFAULT_LEFT;
 
-// now we can call safely
-callback( left );
+	// be safe before calling the function
+	if ( typeof callback === 'function' )
+		callback( left );
 
-// 2 lines with force, exactly the same result:
-left=  types.forceNumber( left, 100 );
-types.forceFunction( callback )( left );
+
+	// with force it's easy and readable, exactly the same result:
+	left= forceNumber( left, DEFAULT_LEFT );
+	forceFunction( callback )( left );
+}
+
 
 // see below for more examples
 ```
@@ -95,17 +136,20 @@ ___
 Basic usage:
 ------------
 
-**force'Type'** Forces a value to be of a given type, and returns that value, a given replacement, or a literal for that Type
+**force[Type]** Forces a value to be of a given type, and returns that value, a given replacement, or a literal for that Type
 
-**is'Type'** and **not'Type'** are useful for single argument type checking.
+**is[Type]** and **not[Type]** are useful for single argument type checking.
 
-**all'Type'** is useful for checking if all given arguments are of a certain type.
+**all[Type]** is useful for checking if all given arguments are of a certain type.
 
-**has'Type'** is useful for checking if one or more arguments are of a certain type.
+**has[Type]** is useful for checking if one or more arguments are of a certain type.
 
 **typeof** Returns a lowercase string representation of the type of the argument value, according to types.js type-definitions.
 
 **intoArray** Converts arguments or space delimited strings into an array.
+
+**enumerate** Creates an immutable 'enum' object
+
 ___
 
 **some more examples:**
@@ -119,25 +163,32 @@ var types= require( 'types.js' );
 var x;
 types.forceString( x );
 // '' (empty String)
-types.forceString( null, 'ok' );					
+types.forceString( null, 'ok' );
 // 'ok' (as String)
-types.forceString( null, [1, 2, 3] );				
+types.forceString( null, [1, 2, 3] );
 // '' (empty String)
-types.forceString(33, 'not used');					
+
+// when Types.autoConvert == true (default)
+types.forceString(33, 'not used');
 // '33' (as String)
-types.forceNumber('35px');							
+types.forceNumber('35px');
 // 35 (as Number)
-types.forceNumber( true, 0 );						
+
+// when Types.autoConvert == false
+types.forceString(33, 'must be string');
+// 'must be string'
+
+types.forceNumber( true, 0 );
 // 0 (as Number)
-types.forceBoolean('35px');							
+types.forceBoolean('35px');
 // false (as Boolean)
-types.forceArray("you'll get an array!");			
+types.forceArray("you'll get an array!");
 // []
-types.intoArray( 'hi', 'there' );					
+types.intoArray( 'hi', 'there' );
 // [ 'hi', 'there' ]
-types.intoArray( ' hi   there ' );					
+types.intoArray( ' hi   there ' );
 // [ 'hi', 'there' ]
-types.intoArray( '', 0, {}, [] );					
+types.intoArray( '', 0, {}, [] );
 // [ '', 1, {}, [] ]
 
 var func= null;
@@ -147,63 +198,63 @@ types.forceFunction( func )( 'arguments for func' );
 // no crash, default empty function is called, returns undefined
 
 // some default type checking:
-types.isDefined()									
+types.isDefined()
 // false
-types.isString( 'Hello types.js!' );				
+types.isString( 'Hello types.js!' );
 // true
-types.isString( 23456 );							
+types.isString( 23456 );
 // false
-types.isBoolean( false );							
+types.isBoolean( false );
 // true
-types.isArray( [1,2,3] );							
+types.isArray( [1,2,3] );
 // true
-types.isObject( [1,2,3] );							
+types.isObject( [1,2,3] );
 // false
-types.isObject( /myRegExp/g );						
+types.isObject( /myRegExp/g );
 // false
-types.isNaN( parseInt('generate NaN') );			
+types.isNaN( parseInt('generate NaN') );
 // true
 
-types.notNull('');									
+types.notNull('');
 // true
-types.notUndefined( undefined );					
+types.notUndefined( undefined );
 // false
-types.isDefined( null );							
+types.isDefined( null );
 // true
 
 // check multiple values in one call:
-types.allString( '', " ", 'with text' );					
+types.allString( '', " ", 'with text' );
 // true
-types.allString( '', ' ', 'with text', 123 );				
+types.allString( '', ' ', 'with text', 123 );
 // false
-types.allStringOrNumber( '', ' ', 'with text', 123 );		
+types.allStringOrNumber( '', ' ', 'with text', 123 );
 // true
-types.allObject( { key: 'nice' }, [], /regexp/ig );			
+types.allObject( { key: 'nice' }, [], /regexp/ig );
 // false
-types.allArray( [1,2,3], [{}], new RegExp('stop') );		
+types.allArray( [1,2,3], [{}], new RegExp('stop') );
 // false
-types.allArray( [1,2,3], [{}], [false, true] );				
+types.allArray( [1,2,3], [{}], [false, true] );
 // true
 
-types.hasString( 123, { value: 'nice' }, ['?'] );			
+types.hasString( 123, { value: 'nice' }, ['?'] );
 // false
-types.hasStringOrNumber( [1,2], /reg/, 'true' )				
+types.hasStringOrNumber( [1,2], /reg/, 'true' )
 // true
-types.hasFunction( 123, { value: 'nice' }, function(){} );	
+types.hasFunction( 123, { value: 'nice' }, function(){} );
 // true
-types.hasUndefined( 'render false!', 123, null );			
+types.hasUndefined( 'render false!', 123, null );
 // false
-types.hasUndefined( 'render true!', 123, undefined );		
+types.hasUndefined( 'render true!', 123, undefined );
 // true
 
 // check for a types.js type definition, returns lowercase string:
-types.typeof( [1,2,3] );									
+types.typeof( [1,2,3] );
 // 'array'
-types.typeof( null );										
+types.typeof( null );
 // 'null'
-types.typeof( parseInt('generate NaN') );					
+types.typeof( parseInt('generate NaN') );
 // 'nan'
-types.typeof( new Date() );									
+types.typeof( new Date() );
 // 'date'
 
 // etc..
@@ -215,27 +266,26 @@ API
 **Types.parseIntBase**
 > `<Number> parseIntBase= 10`
 
-Holds the Radix used by forceNumber, defaults to decimals. Can be set to valid radixes for parseInt(). Note that once set, all
-following forceNumber calls will use the new Radix.
+Holds the Radix used by forceNumber, defaults to 10 (native default). Can be set to valid radixes for parseInt(). Use with extreme care because once set, all following forceNumber calls will use the new Radix!
 ```javascript
-types.parseIntBase= 0xf;
-// parse from hexadecimal, types.forceNumber will parse character 'a'
-var nr= types.forceNumber( 'a linefeed' );
+types.parseIntBase= 0x10; // or 16
+// parse from hexadecimal '0' to 'f'
+
+var nr= types.forceNumber( 'a' );
 console.log( nr );
 // 10 (decimal)
 ```
 
-**Types.force'Type'**
-> `<'Type'> force'Type'( <any type> value, <'Type'> replacement )`
+**Types.force[Type]**
+> `<[type]> force[Type]( <[type]> value, <[type]> replacement )`
 
-Force the return value to be of a particular type. A replacement value can be given for in case value is invalid, if also no replacement
-is given, a literal of the type will be returned, with an exception to Number(see below).
+Force the return value to be of a specific type. A replacement return value can be given for in case value is incompatible. The replacement value should of course be of the same type, otherwise it will be rejected as well. If no proper value for the given type is found a literal of that type will be returned (with an exception of Number(see below)).
 
-All force'Types' share the same methodology, only applying the type denoted by the method name. See the following examples
+All force[types] share the same methodology, only applying the type denoted by the method name. See the following examples
 for it's workings.
 
 **Types.forceBoolean**
-> `<String> Types.forceBoolean( value, replacement )`
+> `<Boolean> Types.forceBoolean( value, replacement )`
 
 > Returns value if value is a types.js boolean. Otherwise it will try to convert value to be true or false. If that fails too,
 > replacement will be tested for, or converted to boolean if possible. If that fails, the default types.js boolean literal
@@ -250,7 +300,7 @@ console.log( assert );
 // true
 ```
 
-**Types.forceString**, **Types.forceArray**, **Types.forceObject**
+**Types.forceString**, **Types.forceArray**, **Types.forceObject**, **Types.forceRegExp**
 
 > Same as .forceBoolean, except for the type being processed.
 
@@ -291,7 +341,7 @@ function forceArgsToNumber(){
 console.log( forceArgsToNumber('ignore', 1, 'the', 2, 'strings!', 3) );
 // [ 1, 2, 3 ]
 console.log( forceArgsToNumber('1 but', '2 not', '3 unconditional!') );
-// [ 1, 2, 3 ]
+// [ 1, 2, 3 ]	// returns [] when types.autoConvert is set to false
 ```
 
 **Types.forceFunction**
@@ -338,19 +388,20 @@ types.forceFunction( brokenFunc, brokenFunc )( 'Dennis' );
 
 
 **Types.logForce**
-> `<undefined> logForce( <Function> logger )`
+> `<undefined> Types.logForce( <Function> handler )`
 
-You can call Types.logForce(); to turn on console logging for failed conversions of forceTypes. If you prefer a more advanced logger than the basic provided console.log, you can simply pass that logger as argument.
+You can call Types.logForce(); to turn on console logging for failed type checks of force[type]. If you prefer a more advanced handler than the basic provided console.log, you can simply pass that handler as argument. The handler will receive 3 arguments: <number> errLevel, <string> expectedType, <string> encounteredType.
 ```javascript
 types.logForce();
 var result= types.forceString( [], 'ok' );
-// types.js - forceString, cannot convert type 'array' to String, trying replacement value now
+// types.js - forceString: initial value is not a String
+
 console.log( result );
 // ok
 ```
 ___
 **Types.intoArray**
-> `<array> Types.intoArray( <any type> arg1, ..., argN )`
+> `<array> Types.intoArray( <[type]> arg1, ..., argN )`
 
 intoArray is a convenience method I use mostly for flexible arguments passing, but can also be used to split
 space delimited strings into an array in a non-sparse way (destructing spaces).
@@ -384,14 +435,14 @@ testArgs( 'This is intoArray!' );
 For space delimited string parsing, all strings are trimmed and reduced to one consecutive space
 to avoid a sparse array.
 ___
-**Types.typeof**
-> `<String> Types.typeof( value )`
+**Types.typeof** and **Types.typeOf**
+> `<String> Types.typeOf( value )`
 
 Returns a lowercase string representation of the type of value, according to types.js types. See all types.js
 type-definitions below.
 ```javascript
 var number= parseInt( 'damn NaN!' );
-console.log( types.typeof(number) );
+console.log( types.typeOf(number) );
 // 'nan'
 ```
 **Types.isBoolean**
@@ -426,6 +477,52 @@ Returns true only if all given arguments are either a Boolean true or false
 console.log( types.allBoolean(false, null, true) );
 // false
 ```
+
+**Types.getFirst[type]**
+> `<[type]> Types.getFirst[type]( [<[any type]>value1, ..., <[any type]>valueN] )`
+
+Returns the first found argument of a specific type.
+
+```javascript
+console.log( types.getFirstString(false, 'hello', true) );
+// hello
+```
+
+
+**Types.enum**
+> `<Object> Types.enum( [<String>item1, ..., <String>itemN], <Number>offset )`
+
+Returns an object with the given items as keys with their respective indices as values. If an offset is given, the index count starts form the value of the offset.
+
+Please note that types.typeof(myEnum) will return 'object', as it actually is an object. Nevertheless we can test with isEnum, hasEnum, etc.. for it to be of the 'virtual' type 'enum'.
+```javascript
+var COLORS= types.enum( ['RED', 'BLUE', 'GREEN'] );
+console.log( COLORS.BLUE );
+// 1
+
+console.log( isEnum(COLORS) );
+// true
+
+console.log Types.getFirstEnum 1, COLORS
+// { RED: 0, BLUE: 1, GREEN: 2 }
+
+// with offset, starting with 10
+COLORS= types.enum( ['RED', 'BLUE', 'GREEN'], 10 );
+console.log( COLORS.BLUE );
+// 11
+```
+
+**Types.disableLogging**
+> `<undefined> Types.disableLogging()`
+
+Disables all logging
+
+**Types.enableLogging**
+> `<undefined> Types.enableLogging()`
+
+Re-enables logging
+
+
 **not / is / has / all'Types'**
 
 All remaining methods are equal to the last four above, except for that they differ in the type being checked. The complete
@@ -446,6 +543,7 @@ notNull				|isNull				|hasNull				|allNull
 notUndefined		|isUndefined		|hasUndefined		|allUndefined
 notDefined			|isDefined			|hasDefined			|allDefined
 notNaN				|isNaN				|hasNaN				|allNaN
+notEnum				|isEnum				|hasEnum				|allEnum
 
 ___
 **types.js type definitions:**
@@ -465,10 +563,9 @@ type				| definition
 'function'		| Any function or instance of Function
 'regexp'			| Any regular expression literal, or any instance of RegExp
 'date'			| Any instance of Date
-
 ___
 
-**force'Type' default return values**
+**force[Type] default return values**
 
 type				| return value
 :--------------|:-----------------
@@ -485,11 +582,24 @@ change log
 
 
 
+**1.7.0**
+
+- adds types.enum and types.enumerate, for creating enumerables
+- adds types.autoConvert (default == true), to allow for disabling automatic String <=> Number conversion with forceString and forceNumber
+- adds types.typeOf as alias for types.typeof
+- adds types.disableLogging() and types.enableLogging()
+- logForce now sends errLevel, expectedType and encounteredType to a custom log handler
+- some refactoring
+- removes old html style jasmine import for tests
+- adds tests for types.enum
+- adds tests for types.autoConvert
+- updates README.md including usage examples for enum
+
+___
 **1.6.1**
 
 - changed license to MIT
 ___
-
 **1.6.0**
 
 - adds forceRegExp

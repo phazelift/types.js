@@ -1,10 +1,10 @@
 {
   "name": "types.js",
-  "version": "1.6.3",
-  "description": "A tiny (~2.5kb) Javascript type checker/enforcer library",
+  "version": "1.7.0",
+  "description": "A tiny and fast dynamic type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jasmine"
   },
   "repository": {
     "type": "git",
@@ -16,17 +16,24 @@
     "types",
     "validation",
     "validate",
+    "test",
+    "dynamic",
     "check",
     "force",
     "is",
     "not",
     "has",
-    "all"
+    "all",
+    "enum"
   ],
   "author": "Dennis Raymondo <phazelift@gmail.com> (https://github.com/phazelift/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/phazelift/types.js/issues"
   },
-  "homepage": "https://github.com/phazelift/types.js"
+  "homepage": "https://github.com/phazelift/types.js",
+  "devDependencies": {
+    "jasmine": "^3.1.0"
+  },
+  "dependencies": {}
 }

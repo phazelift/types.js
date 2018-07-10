@@ -1,4 +1,4 @@
-#	types.js - A tiny Javascript type-check library, written in Coffeescript.
+#	types.js - A tiny and fast dynamic type checker/enforcer library
 #
 # MIT License
 #
@@ -23,102 +23,151 @@
 # SOFTWARE.
 #
 
-"use strict"
-
-# heavily refactored to reduce size while optimizing for speed, at the cost of readability..
+# heavily refactored to reduce size while optimizing for speed, at the cost of some readability..
 
 
-# use dummy log for forceTypes until logging is enabled by user
-log= ->
+MODULE_NAME				= 'types.js'
+ENUM_ID					= '_ENUM_'
+FORCE_MSG_PREFIX		= "#{MODULE_NAME} - force"
+ENUM_ERR_PREFIX		= "#{MODULE_NAME} - enum: ERROR,"
+LOGGING_DISABLED		= "#{MODULE_NAME} - all logging disabled by user"
+LOGGING_ENABLED		= "#{MODULE_NAME} - logging re-enabled by user"
 
-# used for forceTypes logging
-logPrefix	= 'types.js - force'
-
-
-
-instanceOf	= ( type, value ) -> value instanceof type
-# type defaults to object, for internal can do, saves for a few bytes..
-typeOf		= ( value, type= 'object' ) -> typeof value is type
+UNDEFINED				= 'undefined'
+NULL						= 'null'
+FUNCTION					= 'function'
+BOOLEAN					= 'boolean'
+STRING					= 'string'
+ARRAY						= 'array'
+REGEXP					= 'regexp'
+DATE						= 'date'
+NUMBER					= 'number'
+OBJECT					= 'object'
+NAN						= 'nan'
+DEFINED					= 'defined'
+ENUM						= 'enum'
 
 
 LITERALS=
-	'Boolean'	: false
-	'String'		: ''
-	'Object'		: {}
-	'Array'		: []
-	'Function'	: ->
-	'Number'		: do ->
+	[BOOLEAN]		: false
+	[STRING]			: ''
+	[OBJECT]			: {}
+	[ARRAY]			: []
+	[FUNCTION]		: ->
+	[NUMBER]			: do ->
 		number= new Number
 		number.void= true
 		return number
-	'RegExp'		: new RegExp
+	[REGEXP]			: new RegExp
 
 
+log 			= ( args... ) -> if Types.logging then console.log args...
+logForce		= ->
 
+# an unsafe internal for making the first character of a type id uppercase
+upFirst		= ( str ) -> str= str[0].toUpperCase()+ str[1..]
+
+instanceOf	= ( type, value ) -> value instanceof type
+
+# type defaults to object, for internal can do, saves for a few bytes..
+typeOf		= ( value, type= OBJECT ) -> typeof value is type
+
+createEnum= ->
+	_enum= {}
+	Object.defineProperty _enum, ENUM_ID,
+		configurable	: false
+		enumerable		: false
+		value				: true
+		writable			: false
+	return _enum
+
+
+# all definitions that will be used for the is[type], not[type], etc.. tests
 TYPES=
-	'Undefined'		: ( value ) -> value is undefined
-	'Null'			: ( value ) -> value is null
-	'Function'		: ( value ) -> typeOf value, 'function'
-	'Boolean'		: ( value ) -> typeOf value, 'boolean'
-	'String'			: ( value ) -> typeOf value, 'string'
-	'Array'			: ( value ) -> typeOf(value) and instanceOf Array, value
-	'RegExp'			: ( value ) -> typeOf(value) and instanceOf RegExp, value
-	'Date'			: ( value ) -> typeOf(value) and instanceOf Date, value
-	'Number'			: ( value ) -> typeOf(value, 'number') and (value is value) or ( typeOf(value) and instanceOf(Number, value) )
-	'Object'			: ( value ) -> typeOf(value) and (value isnt null) and not instanceOf(Boolean, value) and not instanceOf(Number, value) and not instanceOf(Array, value) and not instanceOf(RegExp, value) and not instanceOf(Date, value)
-	'NaN'				: ( value ) -> typeOf(value, 'number') and (value isnt value)
-	'Defined'		: ( value ) -> value isnt undefined
+	[UNDEFINED]		: ( value ) -> value is undefined
+	[NULL]			: ( value ) -> value is null
+	[FUNCTION]		: ( value ) -> typeOf value, FUNCTION
+	[BOOLEAN]		: ( value ) -> typeOf value, BOOLEAN
+	[STRING]			: ( value ) -> typeOf value, STRING
+	[ARRAY]			: ( value ) -> typeOf(value) and instanceOf Array, value
+	[REGEXP]			: ( value ) -> typeOf(value) and instanceOf RegExp, value
+	[DATE]			: ( value ) -> typeOf(value) and instanceOf Date, value
+	[NUMBER]			: ( value ) -> typeOf(value, NUMBER) and (value is value) or ( typeOf(value) and instanceOf(Number, value) )
+	[OBJECT]			: ( value ) -> typeOf(value) and (value isnt null) and not instanceOf(Boolean, value) and not instanceOf(Number, value) and not instanceOf(Array, value) and not instanceOf(RegExp, value) and not instanceOf(Date, value)
+	[NAN]				: ( value ) -> typeOf(value, NUMBER) and (value isnt value)
+	[DEFINED]		: ( value ) -> value isnt undefined
+	[ENUM]			: ( value ) -> Types.forceObject(value).hasOwnProperty ENUM_ID
 
-TYPES.StringOrNumber= (value) -> TYPES.String(value) or TYPES.Number(value)
+TYPES.StringOrNumber= (value) -> TYPES[STRING](value) or TYPES[NUMBER](value)
 
 
 
-# define the main object that this module will return
+# define the main object that this module returns
 Types= types=
 
 	# used by forceNumber to set the Radix, defaults to decimals
-	parseIntBase: 10
+	parseIntBase	: 10
+	autoConvert		: true
+	logging			: true
 
-	logForce: ( logger ) ->
-		return log= logger if types.isFunction logger
-		return log= types.forceFunction(console.log) if types.isObject console
+	disableLogging	: ->
+		Types.logging= false
+		console.log LOGGING_DISABLED
+
+	enableLogging	: ->
+		Types.logging= true
+		console.log LOGGING_ENABLED
+
+	logForce			: ( externalLog ) ->
+		logForce= ( errLevel, expectedType, encounteredType ) ->
+			if (Types.isFunction externalLog) then externalLog errLevel, expectedType, encounteredType
+			else
+				msg= expectedType
+				switch errLevel
+					when 1 then msg+= ": initial value is not of type "+ expectedType
+					when 2 then msg+= ": optional value is not of type "+ expectedType
+					when 3 then msg+= ": no valid type found, returning a type "+ expectedType+ " literal"
+				log FORCE_MSG_PREFIX+ msg
 
 
-
-
+# factory that creates all Types.force[type] variations
 createForce= ( type ) ->
 
-	# convert value in case initial type test failed. failed conversion returns undefined
-	convertType= ( value ) ->
-		switch type
-			when 'Number' then return value if (types.isNumber value= parseInt value, types.parseIntBase) and not value.void
-			when 'String' then return value+ '' if types.isStringOrNumber value
-			else return value if Types[ 'is'+ type ] value
+	Type= upFirst type
 
-	# the forctType method, returns the type's defaultValue, if both value and replacement are not of, or convertible to, type
+	# convert value in case initial Type test failed. failed conversion returns undefined
+	test= ( value ) ->
+		if types.autoConvert then switch type
+			when NUMBER then if not value.void
+				value= parseInt value, types.parseIntBase
+			when STRING then if types.isNumber value
+				value+= ''
+		return value if Types['is'+ Type] value
+
+	# the forctType method, returns the Type's literal or defaultValue if both value and replacement are not compatible
 	return ( value, replacement ) ->
 
-		valueType= types.typeof value
-		return value if value? and undefined isnt value= convertType value
-		log logPrefix+ type+ ': invalid first argument with type: \''+ valueType+ '\''
+		return okValue if value? and (undefined isnt okValue= test value)
+
+		logForce 1, Type, value
 
 		if types.isDefined replacement
 			replacementType= types.typeof replacement
-			return replacement if replacement? and undefined isnt replacement= convertType replacement
-			log logPrefix+ type+ ': invalid second argument with type: \''+ replacementType+ '\''
+			if replacement? and (undefined isnt replacement= test replacement)
+				return replacement
+			else logForce 2, Type, value
 
-		log logPrefix+ type+ ': forcing return value to type '+ type
+		logForce 3, Type, value
+
 		return LITERALS[ type ]
-
 
 
 
 # test multiple values(arguments) for a given predicate. returns breakState if predicate is breakState for some value
 # when no break occured, ! breakState will be returned.
-testValues= ( predicate, breakState, values= [] ) ->
-
+testHasAndAll= ( predicate, breakState, values= [] ) ->
 	# testing 'has' or 'all' for 'undefined' should return true on calls without arguments
-	return ( predicate is TYPES.Undefined ) if values.length < 1
+	return ( predicate is TYPES[UNDEFINED] ) if values.length < 1
 
 	for value in values
 		return breakState if predicate(value) is breakState
@@ -127,49 +176,71 @@ testValues= ( predicate, breakState, values= [] ) ->
 
 
 
-# generate all the is/not/has/all/force'Types'
-breakIfEqual= true
-do -> for name, predicate of TYPES then do ( name, predicate ) ->
+# generate all the is/not/has/all/force Types
+BREAK_IF_EQUAL= true
+do -> for type, predicate of TYPES then do ( type, predicate ) ->
 
-	Types[ 'is'+ name ]	= predicate
-	Types[ 'not'+ name ]	= ( value ) -> not predicate value
-	Types[ 'has'+ name ]	= -> testValues predicate, breakIfEqual, arguments
-	Types[ 'all'+ name ]	= -> testValues predicate, not breakIfEqual, arguments
+	Type= switch type
+		when NAN then 'NaN'
+		when REGEXP then 'RegExp'
+		else upFirst type
+
+	Types[ 'is'+ Type ]	= predicate
+	Types[ 'not'+ Type ]	= ( value ) -> not predicate value
+	Types[ 'has'+ Type ]	= -> testHasAndAll predicate, BREAK_IF_EQUAL, arguments
+	Types[ 'all'+ Type ]	= -> testHasAndAll predicate, not BREAK_IF_EQUAL, arguments
 
 	# create only forceType of types found in LITERALS
-	Types[ 'force'+ name ]= createForce name if name of LITERALS
+	if type of LITERALS then Types[ 'force'+ Type ]= createForce type
 
-	Types[ 'getFirst'+ name ]= ( values... ) ->
-		for value in values
-			return value if Types[ 'is'+ name ] value
+	Types[ 'getFirst'+ Type ]= ( values... ) ->
+		for value in values then return value if Types[ 'is'+ Type ] value
+
 
 
 
 Types.intoArray= ( args... ) ->
 	if args.length < 2
-
 		if types.isString args[ 0 ]
 			# to string, trim, limit to one consecutive space, back to array
 			args= args.join( '' ).replace( /^\s+|\s+$/g, '' ).replace( /\s+/g, ' ' ).split ' '
 		else if types.isArray args[ 0 ]
 			args= args[ 0 ]
-
 	return args
 
 
 
-Types.typeof= ( value ) ->
+
+Types.typeOf= Types.typeof= ( value ) ->
 	for name, predicate of TYPES
-		return name.toLowerCase() if predicate( value ) is true
+		return name if predicate(value) is true
 
 
 
 
-if define? and ( 'function' is typeof define ) and define.amd
+Types.enum= Types.enumerate= ( items, offset ) ->
+	offset	= types.forceNumber offset, 0
+	_enum		= createEnum()
+
+	if types.notArray items
+		log "#{ENUM_ERR_PREFIX} invalid or missing enumeration array"
+		return _enum
+
+	for item, index in items
+		if types.isString item then _enum[ item ]= (index+ offset)
+		else log "#{ENUM_ERR_PREFIX} ignored non-string item that was found in enumeration array"
+
+	types.forceFunction( Object.freeze ) _enum
+	return _enum
+
+
+
+
+if define? and ( FUNCTION is typeof define ) and define.amd
 	define 'types', [], -> Types
 
-if typeof module isnt 'undefined'
+if typeof module isnt UNDEFINED
 	module.exports= Types
 
-if typeof window isnt 'undefined'
+if typeof window isnt UNDEFINED
 	window.Types= Types
