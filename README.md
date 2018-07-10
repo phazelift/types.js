@@ -91,14 +91,12 @@ For example a look at how we can safely call a function that needs to pass a num
 ```javascript
 
 function test( left, callback ){
-	const DEFAULT_LEFT= 500;
-
 	if ( typeof left !== 'number' )
 	 	left= parseInt( left, 10 );
 
 	// check for parseInt returning NaN..
 	if ( left !== left || typeof left !== 'number' )
-		left= DEFAULT_LEFT;
+		left= 500;
 
 	// be safe before calling the function
 	if ( typeof callback === 'function' )
@@ -106,10 +104,9 @@ function test( left, callback ){
 
 
 	// with force it's easy and readable, exactly the same result:
-	left= forceNumber( left, DEFAULT_LEFT );
+	left= forceNumber( left, 500 );
 	forceFunction( callback )( left );
 }
-
 
 // see below for more examples
 ```
