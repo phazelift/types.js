@@ -16,7 +16,7 @@ function filter( arr: array ){
 }
 // because there is NO TypeScript at run time!
 // if for untested reason the type of arr at run time is
-// something like null, your app will crash in all its glory
+// something like null, my app would crash in all its glory
 
 // I prefer 100% safety at all times, functional and readable:
 forceArray(arr).map( (value) => do stuff with value.. )
@@ -48,10 +48,6 @@ The performance penalty is negligible for the majority of operations.
 const { enumerate, typeOf, forceString, forceNumber, intoArray, allDefined,
 	hasObject }	= require( 'types.js' );
 
-const COLORS= enumerate( ['RED', 'GREEN', 'BLUE'] );
-console.log( COLORS.BLUE );
-// 2
-
 typeOf( [] );
 // 'array'
 typeOf( null );
@@ -78,6 +74,10 @@ allDefined( 'good', false, 0 );
 // true
 hasObject( 'not', 'really' );
 // false
+
+const COLORS= enumerate( ['RED', 'GREEN', 'BLUE'] );
+console.log( COLORS.BLUE );
+// 2
 
 // there is much more, see below.
 ```
