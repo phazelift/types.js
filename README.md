@@ -8,25 +8,27 @@ types.js
 
 **Why**
 
-Because dynamic type checking is often more powerful, simple and safe compared to static type checking.
+Because only with dynamic type checking I can be 100% sure my app handles type issues properly at run time.
+It really gives me a better nights rest!
+
 ```javascript
 // even with TypeScript I'd never do:
-function filter( arr: array ){
-	arr.map( (value) => do stuff with value.. )
-}
-// because there is NO TypeScript at run time!
-// if for untested reason the type of arr at run time is
-// something like null, my app would crash in all its glory
+function stringify( arr: array ){
+	return arr.map( (value) => value+ '' );
+	// there is no TypeScript at run time, no handling, nothing.
+	// if for untested reason the type of arr is null at run time,
+	// my app would crash in all its glory
 
-// I prefer 100% safety at all times, functional and readable:
-forceArray(arr).map( (value) => do stuff with value.. )
+	// I prefer 100% safety at all times, simple and functional:
+	return forceArray(arr).map( (value) => value+ '' );
+}
 ```
 
 <br/>
 
 **Performance**
 
-The performance penalty is negligible for the majority of operations.
+The performance penalty is negligible for the majority of operations. It's roughly between 0.00002ms and 0.0001ms per call (on my 4yr old laptop).
 
 <br/>
 
@@ -57,13 +59,14 @@ typeOf( /someregexp/ );
 typeOf( parseInt('Not A Number!') );
 // 'nan'
 
+// when Types.autoConvert is set to true (default) you can
 // auto convert/parse number to string or vice versa if possible
-forceString( 123 );
-// '123'
-forceNumber( '123mm' );
-// 123
-forceNumber( 'use next arg..', 123 );
-// 123
+forceString( 12 );
+// '12'
+forceNumber( '12px' );
+// 12
+forceNumber( 'will use next arg..', 12 );
+// 12
 
 intoArray( '1 2 3' );
 // ['1', '2', '3']
@@ -91,22 +94,28 @@ For example a look at how we can safely call a function that needs to pass a num
 ```javascript
 
 function test( left, callback ){
-	if ( typeof left !== 'number' )
+	// left needs to be or become a number
+	if ( typeof left !== 'number' ){
 	 	left= parseInt( left, 10 );
+	}
 
-	// check for parseInt returning NaN..
-	if ( left !== left || typeof left !== 'number' )
-		left= 500;
+	// check for parseInt returning a number instead of NaN..
+	if ( left !== left || typeof left !== 'number' ){
+		left= 0;
+	}
 
 	// be safe before calling the function
-	if ( typeof callback === 'function' )
+	if ( typeof callback === 'function' ){
 		callback( left );
-
+	}
 
 	// with force it's easy and readable, exactly the same result:
-	left= forceNumber( left, 500 );
+	left= forceNumber( left, 0 );
 	forceFunction( callback )( left );
 }
+test( '20px', console.log );
+// 20
+// 20
 
 // see below for more examples
 ```
