@@ -15,7 +15,7 @@ It really gives me a better nights rest!
 // even with TypeScript I'd never do:
 function stringify( arr: array ){
 	return arr.map( (value) => value+ '' );
-	// there is no TypeScript at run time, no handling, nothing.
+	// there is no TypeScript at run time, no handling
 	// if for untested reason the type of arr is null at run time,
 	// my app would crash in all its glory
 
@@ -546,6 +546,7 @@ notFunction			|isFunction			|hasFunction		|allFunction
 notRegexp			|isRegexp			|hasRegexp			|allRegexp
 notDate				|isDate				|hasDate				|allDate
 notNull				|isNull				|hasNull				|allNull
+notSymbol			|isSymbol			|hasSymbol			|allSymbol
 notUndefined		|isUndefined		|hasUndefined		|allUndefined
 notDefined			|isDefined			|hasDefined			|allDefined
 notNaN				|isNaN				|hasNaN				|allNaN
@@ -569,6 +570,7 @@ type				| definition
 'function'		| Any function or instance of Function
 'regexp'			| Any regular expression literal, or any instance of RegExp
 'date'			| Any instance of Date
+'symbol'			| Any Symbol created with Symbol()
 ___
 
 **force[Type] default return values**
@@ -588,6 +590,13 @@ change log
 
 
 
+**1.8.0**
+
+- adds 'symbol' type to types.js
+- is/not/has/allSymbol now available
+- adds tests for type 'symbol'
+- fixes a minor flaw in autoConvert for forceNumber, it now only attempts to auto-convert values of type 'string'
+___
 **1.7.0**
 
 - adds types.enum and types.enumerate, for creating enumerables

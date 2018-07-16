@@ -25,7 +25,7 @@
   // SOFTWARE.
 
   // heavily refactored to reduce size while optimizing for speed, at the cost of some readability..
-  var ARRAY, BOOLEAN, BREAK_IF_EQUAL, DATE, DEFINED, ENUM, ENUM_ERR_PREFIX, ENUM_ID, FORCE_MSG_PREFIX, FUNCTION, LITERALS, LOGGING_DISABLED, LOGGING_ENABLED, MODULE_NAME, NAN, NULL, NUMBER, OBJECT, REGEXP, STRING, TYPES, Types, UNDEFINED, createEnum, createForce, instanceOf, log, logForce, testHasAndAll, typeOf, types, upFirst;
+  var ARRAY, BOOLEAN, BREAK_IF_EQUAL, DATE, DEFINED, ENUM, ENUM_ERR_PREFIX, ENUM_ID, FORCE_MSG_PREFIX, FUNCTION, LITERALS, LOGGING_DISABLED, LOGGING_ENABLED, MODULE_NAME, NAN, NULL, NUMBER, OBJECT, REGEXP, STRING, SYMBOL, TYPES, Types, UNDEFINED, createEnum, createForce, instanceOf, log, logForce, testHasAndAll, typeOf, types, upFirst;
 
   MODULE_NAME = 'types.js';
 
@@ -39,31 +39,33 @@
 
   LOGGING_ENABLED = `${MODULE_NAME} - logging re-enabled by user`;
 
-  UNDEFINED = 'undefined';
-
-  NULL = 'null';
-
-  FUNCTION = 'function';
+  ARRAY = 'array';
 
   BOOLEAN = 'boolean';
 
-  STRING = 'string';
-
-  ARRAY = 'array';
-
-  REGEXP = 'regexp';
-
   DATE = 'date';
+
+  DEFINED = 'defined';
+
+  ENUM = 'enum';
+
+  FUNCTION = 'function';
+
+  NAN = 'nan';
+
+  NULL = 'null';
 
   NUMBER = 'number';
 
   OBJECT = 'object';
 
-  NAN = 'nan';
+  REGEXP = 'regexp';
 
-  DEFINED = 'defined';
+  STRING = 'string';
 
-  ENUM = 'enum';
+  SYMBOL = 'symbol';
+
+  UNDEFINED = 'undefined';
 
   LITERALS = {
     [BOOLEAN]: false,
@@ -146,14 +148,17 @@
     [OBJECT]: function(value) {
       return typeOf(value) && (value !== null) && !instanceOf(Boolean, value) && !instanceOf(Number, value) && !instanceOf(Array, value) && !instanceOf(RegExp, value) && !instanceOf(Date, value);
     },
+    [SYMBOL]: function(value) {
+      return typeOf(value, SYMBOL);
+    },
     [NAN]: function(value) {
       return typeOf(value, NUMBER) && (value !== value);
     },
-    [DEFINED]: function(value) {
-      return value !== void 0;
-    },
     [ENUM]: function(value) {
       return Types.forceObject(value).hasOwnProperty(ENUM_ID);
+    },
+    [DEFINED]: function(value) {
+      return value !== void 0;
     }
   };
 
@@ -207,7 +212,7 @@
       if (types.autoConvert) {
         switch (type) {
           case NUMBER:
-            if (!value.void) {
+            if (types.isString(value)) {
               value = parseInt(value, types.parseIntBase);
             }
             break;

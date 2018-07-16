@@ -33,19 +33,20 @@ ENUM_ERR_PREFIX		= "#{MODULE_NAME} - enum: ERROR,"
 LOGGING_DISABLED		= "#{MODULE_NAME} - all logging disabled by user"
 LOGGING_ENABLED		= "#{MODULE_NAME} - logging re-enabled by user"
 
-UNDEFINED				= 'undefined'
-NULL						= 'null'
-FUNCTION					= 'function'
-BOOLEAN					= 'boolean'
-STRING					= 'string'
 ARRAY						= 'array'
-REGEXP					= 'regexp'
+BOOLEAN					= 'boolean'
 DATE						= 'date'
-NUMBER					= 'number'
-OBJECT					= 'object'
-NAN						= 'nan'
 DEFINED					= 'defined'
 ENUM						= 'enum'
+FUNCTION					= 'function'
+NAN						= 'nan'
+NULL						= 'null'
+NUMBER					= 'number'
+OBJECT					= 'object'
+REGEXP					= 'regexp'
+STRING					= 'string'
+SYMBOL					= 'symbol'
+UNDEFINED				= 'undefined'
 
 
 LITERALS=
@@ -94,9 +95,10 @@ TYPES=
 	[DATE]			: ( value ) -> typeOf(value) and instanceOf Date, value
 	[NUMBER]			: ( value ) -> typeOf(value, NUMBER) and (value is value) or ( typeOf(value) and instanceOf(Number, value) )
 	[OBJECT]			: ( value ) -> typeOf(value) and (value isnt null) and not instanceOf(Boolean, value) and not instanceOf(Number, value) and not instanceOf(Array, value) and not instanceOf(RegExp, value) and not instanceOf(Date, value)
+	[SYMBOL]			: ( value ) -> typeOf value, SYMBOL
 	[NAN]				: ( value ) -> typeOf(value, NUMBER) and (value isnt value)
-	[DEFINED]		: ( value ) -> value isnt undefined
 	[ENUM]			: ( value ) -> Types.forceObject(value).hasOwnProperty ENUM_ID
+	[DEFINED]		: ( value ) -> value isnt undefined
 
 TYPES.StringOrNumber= (value) -> TYPES[STRING](value) or TYPES[NUMBER](value)
 
@@ -130,6 +132,8 @@ Types= types=
 				log FORCE_MSG_PREFIX+ msg
 
 
+
+
 # factory that creates all Types.force[type] variations
 createForce= ( type ) ->
 
@@ -138,7 +142,7 @@ createForce= ( type ) ->
 	# convert value in case initial Type test failed. failed conversion returns undefined
 	test= ( value ) ->
 		if types.autoConvert then switch type
-			when NUMBER then if not value.void
+			when NUMBER then if types.isString value
 				value= parseInt value, types.parseIntBase
 			when STRING then if types.isNumber value
 				value+= ''
@@ -160,6 +164,7 @@ createForce= ( type ) ->
 		logForce 3, Type, value
 
 		return LITERALS[ type ]
+
 
 
 

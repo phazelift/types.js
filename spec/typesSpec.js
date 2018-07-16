@@ -185,6 +185,9 @@ describe("isDefined( value )", function() {
     result= Types.isDefined( /bla/ );
     expect( result ).toBe( true );
 
+    result= Types.isDefined( Symbol() );
+    expect( result ).toBe( true );
+
   });
 });
 
@@ -301,65 +304,31 @@ describe("isString( value )", function() {
         result= Types.isString( undefined );
         expect( result ).toBe( false );
 
+        result= Types.isString( Symbol() );
+        expect( result ).toBe( false );
+
     });
 });
 
 
+describe("[type]Symbol( value )", function() {
 
-describe("isNumber( value )", function() {
+  it("should return true for type Symbol arguments only", function(){
 
-  it("should return true for type Number arguments only", function(){
-
-    result= Types.isNumber( 0 );
+    result= Types.isSymbol( Symbol() );
     expect( result ).toBe( true );
 
-    result= Types.isNumber( 10 * 10 );
+    result= Types.notSymbol( Symbol() );
+    expect( result ).toBe( false );
+
+    result= Types.hasSymbol( null, '?', Symbol() );
     expect( result ).toBe( true );
 
-    result= Types.isNumber( parseInt('123') );
-    expect( result ).toBe( true );
-
-    result= Types.isNumber( (function(){ return 44; })() );
-    expect( result ).toBe( true );
-
-    result= Types.isNumber();
+    result= Types.allSymbol( null, '?', Symbol() );
     expect( result ).toBe( false );
-
-    result= Types.isNumber( true );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( new Boolean() );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( '234' );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( ['array'] );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( {string: 'string'} );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( /regexp/ig );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( new Date() );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( function(){ return 0; } );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( NaN );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( null );
-    expect( result ).toBe( false );
-
-    result= Types.isNumber( undefined );
-    expect( result ).toBe( false );
-
   });
 });
+
 
 describe("isStringOrNumber( value )", function() {
 
@@ -477,6 +446,8 @@ describe("isArray( value )", function() {
     result= Types.isArray( undefined );
     expect( result ).toBe( false );
 
+    result= Types.isArray( Symbol() );
+    expect( result ).toBe( false )
   });
 
 });
@@ -500,6 +471,7 @@ describe("isObject( value )", function() {
     result= Types.isObject( new String() );
     expect( result ).toBe( true );
   });
+
 
  it("should return false if argument is not instanceof Object", function(){
     result= Types.isObject();
@@ -528,6 +500,9 @@ describe("isObject( value )", function() {
 
     result= Types.isObject( undefined );
     expect( result ).toBe( false );
+
+    result= Types.isObject( Symbol() );
+    expect( result ).toBe( false )
 
   });
 });
@@ -574,6 +549,9 @@ describe("isFunction( value )", function() {
 
     result= Types.isFunction( undefined );
     expect( result ).toBe( false );
+
+    result= Types.isFunction( Symbol() );
+    expect( result ).toBe( false )
 
   });
 });
@@ -623,6 +601,9 @@ describe("isRegExp( value )", function() {
     result= Types.isRegExp( undefined );
     expect( result ).toBe( false );
 
+    result= Types.isRegExp( Symbol() );
+    expect( result ).toBe( false )
+
   });
 });
 
@@ -671,8 +652,12 @@ describe("isDate( value )", function() {
     result= Types.isDate( undefined );
     expect( result ).toBe( false );
 
+    result= Types.isDate( Symbol() );
+    expect( result ).toBe( false )
+
   });
 });
+
 
 describe("isNaN( value )", function() {
 
@@ -711,6 +696,8 @@ describe("isNaN( value )", function() {
     result= Types.isNaN( undefined );
     expect( result ).toBe( false );
 
+    result= Types.isNaN( Symbol() );
+    expect( result ).toBe( false )
   });
 });
 
@@ -748,6 +735,8 @@ describe("isNull( value )", function() {
     result= Types.isNull( undefined );
     expect( result ).toBe( false );
 
+    result= Types.isNull( Symbol() );
+    expect( result ).toBe( false )
   });
 });
 
@@ -788,6 +777,8 @@ describe("isUndefined( value )", function() {
     result= Types.isUndefined( new Date() );
     expect( result ).toBe( false );
 
+    result= Types.isUndefined( Symbol() );
+    expect( result ).toBe( false )
   });
 
 });
@@ -799,56 +790,60 @@ describe("notBoolean( value )", function() {
 
   it("should return true if argument is not of type Boolean", function(){
 
-    result= ! Types.notBoolean( true );
+    result= Types.notBoolean( true );
+    expect( result ).toBe( false );
+
+    result= Types.notBoolean( false );
+    expect( result ).toBe( false );
+
+    result= Types.notBoolean( (1 + 1 === 2) );
+    expect( result ).toBe( false );
+
+    result= Types.notBoolean( true || false );
+    expect( result ).toBe( false );
+
+    result= Types.notBoolean( (function(){ return false })() );
+    expect( result ).toBe( false );
+
+    result= Types.notBoolean();
     expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( false );
+    result= Types.notBoolean( 'true' );
     expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( (1 + 1 === 2) );
+    result= Types.notBoolean( 234 );
     expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( true || false );
+    result= Types.notBoolean( ['array'] );
     expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( (function(){ return false })() );
+    result= Types.notBoolean( {string: 'string'} );
     expect( result ).toBe( true );
 
-    result= ! Types.notBoolean();
-    expect( result ).toBe( false );
+    result= Types.notBoolean( /regexp/ig );
+    expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( 'true' );
-    expect( result ).toBe( false );
+    result= Types.notString( new Date() );
+    expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( 234 );
-    expect( result ).toBe( false );
+    result= Types.notBoolean( function(){ return false; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( ['array'] );
-    expect( result ).toBe( false );
+    result= Types.notBoolean( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( {string: 'string'} );
-    expect( result ).toBe( false );
+    result= Types.notBoolean( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notBoolean( /regexp/ig );
-    expect( result ).toBe( false );
+    result= Types.notBoolean( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notString( new Date() );
-    expect( result ).toBe( false );
-
-    result= ! Types.notBoolean( function(){ return false; } );
-    expect( result ).toBe( false );
-
-    result= ! Types.notBoolean( NaN );
-    expect( result ).toBe( false );
-
-    result= ! Types.notBoolean( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notBoolean( undefined );
-    expect( result ).toBe( false );
+    result= Types.notBoolean( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
+
 
 describe("notString( value )", function() {
 
@@ -869,6 +864,7 @@ describe("notString( value )", function() {
     result= Types.notString( (function(){ return 'string (only when called..)'; })() );
     expect( result ).toBe( false );
   });
+
 
   it("should return true if argument is not of type String", function(){
     result= Types.notString();
@@ -905,6 +901,9 @@ describe("notString( value )", function() {
     expect( result ).toBe( true );
 
     result= Types.notString( undefined );
+    expect( result ).toBe( true );
+
+    result= Types.notString( Symbol() );
     expect( result ).toBe( true );
 
   });
@@ -960,6 +959,9 @@ describe("notNumber( value )", function() {
     expect( result ).toBe( false );
 
     result= ! Types.notNumber( undefined );
+    expect( result ).toBe( false );
+
+    result= ! Types.notNumber( Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1082,6 +1084,9 @@ describe("notArray( value )", function() {
     result= ! Types.notArray( undefined );
     expect( result ).toBe( false );
 
+    result= ! Types.notArray( Symbol() );
+    expect( result ).toBe( false );
+
   });
 });
 
@@ -1089,47 +1094,50 @@ describe("notObject( value )", function() {
 
  it("should return true if argument is not of type Object", function(){
 
-    result= ! Types.notObject( {} );
+    result= Types.notObject( {} );
+    expect( result ).toBe( false );
+
+    result= Types.notObject( { ok: 'is object' } );
+    expect( result ).toBe( false );
+
+    result= Types.notObject( (function(){ return {}; })() );
+    expect( result ).toBe( false );
+
+    result= Types.notObject( new Object() );
+    expect( result ).toBe( false );
+
+    result= Types.notObject( new String() );
+    expect( result ).toBe( false );
+
+    result= Types.notObject();
     expect( result ).toBe( true );
 
-    result= ! Types.notObject( { ok: 'is object' } );
+    result= Types.notObject( true );
     expect( result ).toBe( true );
 
-    result= ! Types.notObject( (function(){ return {}; })() );
+    result= Types.notObject( '234' );
     expect( result ).toBe( true );
 
-    result= ! Types.notObject( new Object() );
+    result= Types.notObject( '[]' );
     expect( result ).toBe( true );
 
-    result= ! Types.notObject( new String() );
+    result= Types.notObject( /object/ig );
     expect( result ).toBe( true );
 
-    result= ! Types.notObject();
-    expect( result ).toBe( false );
+    result= Types.notObject( function(){ return {}; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notObject( true );
-    expect( result ).toBe( false );
+    result= Types.notObject( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notObject( '234' );
-    expect( result ).toBe( false );
+    result= Types.notObject( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notObject( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notObject( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notObject( /object/ig );
-    expect( result ).toBe( false );
-
-    result= ! Types.notObject( function(){ return {}; } );
-    expect( result ).toBe( false );
-
-    result= ! Types.notObject( NaN );
-    expect( result ).toBe( false );
-
-    result= ! Types.notObject( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notObject( undefined );
-    expect( result ).toBe( false );
+    result= Types.notObject( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1138,44 +1146,47 @@ describe("notFunction( value )", function() {
 
  it("should return true if argument is not of type Function", function(){
 
-    result= ! Types.notFunction( function(){} );
+    result= Types.notFunction( function(){} );
+    expect( result ).toBe( false );
+
+    result= Types.notFunction( expect );
+    expect( result ).toBe( false );
+
+    result= Types.notFunction( (function(){ return function(){}; })() );
+    expect( result ).toBe( false );
+
+    result= Types.notFunction( Object );
+    expect( result ).toBe( false );
+
+    result= Types.notFunction();
     expect( result ).toBe( true );
 
-    result= ! Types.notFunction( expect );
+    result= Types.notFunction( true );
     expect( result ).toBe( true );
 
-    result= ! Types.notFunction( (function(){ return function(){}; })() );
+    result= Types.notFunction( '234' );
     expect( result ).toBe( true );
 
-    result= ! Types.notFunction( Object );
+    result= Types.notFunction( '[]' );
     expect( result ).toBe( true );
 
-    result= ! Types.notFunction();
-    expect( result ).toBe( false );
+    result= Types.notFunction( /object/ig );
+    expect( result ).toBe( true );
 
-    result= ! Types.notFunction( true );
-    expect( result ).toBe( false );
+    result= Types.notFunction( {} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notFunction( '234' );
-    expect( result ).toBe( false );
+    result= Types.notFunction( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notFunction( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notFunction( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notFunction( /object/ig );
-    expect( result ).toBe( false );
+    result= Types.notFunction( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notFunction( {} );
-    expect( result ).toBe( false );
-
-    result= ! Types.notFunction( NaN );
-    expect( result ).toBe( false );
-
-    result= ! Types.notFunction( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notFunction( undefined );
-    expect( result ).toBe( false );
+    result= Types.notFunction( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1186,44 +1197,47 @@ describe("notRegExp( value )", function() {
 
     var reg= new RegExp('abc');
 
-    result= ! Types.notRegExp( /reg/ig );
+    result= Types.notRegExp( /reg/ig );
+    expect( result ).toBe( false );
+
+    result= Types.notRegExp( new RegExp('123') );
+    expect( result ).toBe( false );
+
+    result= Types.notRegExp( (function(){ return /abc/; })() );
+    expect( result ).toBe( false );
+
+    result= Types.notRegExp( reg );
+    expect( result ).toBe( false );
+
+    result= Types.notRegExp();
     expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( new RegExp('123') );
+    result= Types.notRegExp( true );
     expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( (function(){ return /abc/; })() );
+    result= Types.notRegExp( '234' );
     expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( reg );
+    result= Types.notRegExp( '[]' );
     expect( result ).toBe( true );
 
-    result= ! Types.notRegExp();
-    expect( result ).toBe( false );
+    result= Types.notRegExp( function(){ return /asdf/; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( true );
-    expect( result ).toBe( false );
+    result= Types.notRegExp( {} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( '234' );
-    expect( result ).toBe( false );
+    result= Types.notRegExp( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notRegExp( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( function(){ return /asdf/; } );
-    expect( result ).toBe( false );
+    result= Types.notRegExp( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notRegExp( {} );
-    expect( result ).toBe( false );
-
-    result= ! Types.notRegExp( NaN );
-    expect( result ).toBe( false );
-
-    result= ! Types.notRegExp( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notRegExp( undefined );
-    expect( result ).toBe( false );
+    result= Types.notRegExp( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1234,44 +1248,47 @@ describe("notDate( value )", function() {
 
     var date= new Date();
 
-    result= ! Types.notDate( new Date() );
+    result= Types.notDate( new Date() );
+    expect( result ).toBe( false );
+
+    result= Types.notDate( new Date('123') );
+    expect( result ).toBe( false );
+
+    result= Types.notDate( (function(){ return new Date(); })() );
+    expect( result ).toBe( false );
+
+    result= Types.notDate( date );
+    expect( result ).toBe( false );
+
+    result= Types.notDate();
     expect( result ).toBe( true );
 
-    result= ! Types.notDate( new Date('123') );
+    result= Types.notDate( true );
     expect( result ).toBe( true );
 
-    result= ! Types.notDate( (function(){ return new Date(); })() );
+    result= Types.notDate( '234' );
     expect( result ).toBe( true );
 
-    result= ! Types.notDate( date );
+    result= Types.notDate( '[]' );
     expect( result ).toBe( true );
 
-    result= ! Types.notDate();
-    expect( result ).toBe( false );
+    result= Types.notDate( function(){ return /asdf/; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notDate( true );
-    expect( result ).toBe( false );
+    result= Types.notDate( {} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notDate( '234' );
-    expect( result ).toBe( false );
+    result= Types.notDate( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notDate( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notDate( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notDate( function(){ return /asdf/; } );
-    expect( result ).toBe( false );
+    result= Types.notDate( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notDate( {} );
-    expect( result ).toBe( false );
-
-    result= ! Types.notDate( NaN );
-    expect( result ).toBe( false );
-
-    result= ! Types.notDate( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notDate( undefined );
-    expect( result ).toBe( false );
+    result= Types.notDate( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1280,38 +1297,41 @@ describe("notNaN( value )", function() {
 
  it("should return true if argument is not of type NaN", function(){
 
-    result= ! Types.notNaN( NaN );
+    result= Types.notNaN( NaN );
+    expect( result ).toBe( false );
+
+    result= Types.notNaN( parseInt('abc') );
+    expect( result ).toBe( false );
+
+    result= Types.notNaN();
     expect( result ).toBe( true );
 
-    result= ! Types.notNaN( parseInt('abc') );
+    result= Types.notNaN( parseInt('123', 10) );
     expect( result ).toBe( true );
 
-    result= ! Types.notNaN();
-    expect( result ).toBe( false );
+    result= Types.notNaN( true );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( parseInt('123', 10) );
-    expect( result ).toBe( false );
+    result= Types.notNaN( '234' );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( true );
-    expect( result ).toBe( false );
+    result= Types.notNaN( '[]' );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( '234' );
-    expect( result ).toBe( false );
+    result= Types.notNaN( function(){ return /asdf/; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notNaN( {} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( function(){ return /asdf/; } );
-    expect( result ).toBe( false );
+    result= Types.notNaN( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( {} );
-    expect( result ).toBe( false );
+    result= Types.notNaN( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNaN( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notNaN( undefined );
-    expect( result ).toBe( false );
+    result= Types.notNaN( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1320,76 +1340,82 @@ describe("notNull( value )", function() {
 
  it("should return true if argument is not of type Null", function(){
 
-    result= ! Types.notNull( null );
+    result= Types.notNull( null );
+    expect( result ).toBe( false );
+
+    result= Types.notNull();
     expect( result ).toBe( true );
 
-    result= ! Types.notNull();
-    expect( result ).toBe( false );
+    result= Types.notNull( true );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( true );
-    expect( result ).toBe( false );
+    result= Types.notNull( '234' );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( '234' );
-    expect( result ).toBe( false );
+    result= Types.notNull( '[]' );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notNull( function(){ return /asdf/; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( function(){ return /asdf/; } );
-    expect( result ).toBe( false );
+    result= Types.notNull( {} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( {} );
-    expect( result ).toBe( false );
+    result= Types.notNull( 88 );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( 88 );
-    expect( result ).toBe( false );
+    result= Types.notNull( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( NaN );
-    expect( result ).toBe( false );
+    result= Types.notNull( undefined );
+    expect( result ).toBe( true );
 
-    result= ! Types.notNull( undefined );
-    expect( result ).toBe( false );
-
+    result= Types.notNull( Symbol() );
+    expect( result ).toBe( true );
   });
 
 });
+
 
 describe("notUndefined( value )", function() {
 
  it("should return true if argument is not of type Undefined", function(){
 
-    result= ! Types.notUndefined( undefined );
+    result= Types.notUndefined( undefined );
+    expect( result ).toBe( false );
+
+    result= Types.notUndefined();
+    expect( result ).toBe( false );
+
+    result= Types.notUndefined( true );
     expect( result ).toBe( true );
 
-    result= ! Types.notUndefined();
+    result= Types.notUndefined( '234' );
     expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( true );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( '[]' );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( '234' );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( function(){ return /asdf/; } );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( '[]' );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( {} );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( function(){ return /asdf/; } );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( 88 );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( {} );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( NaN );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( 88 );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( null );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( NaN );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( new Date() );
+    expect( result ).toBe( true );
 
-    result= ! Types.notUndefined( null );
-    expect( result ).toBe( false );
-
-    result= ! Types.notUndefined( new Date() );
-    expect( result ).toBe( false );
+    result= Types.notUndefined( Symbol() );
+    expect( result ).toBe( true );
 
   });
 });
@@ -1445,6 +1471,9 @@ it("should return true if at least one argument is of type Boolean", function(){
     result= Types.hasBoolean( undefined );
     expect( result ).toBe( false );
 
+    result= Types.hasBoolean( Symbol() );
+    expect( result ).toBe( false );
+
   });
 });
 
@@ -1468,6 +1497,7 @@ describe("hasString( value, [value1, ..., valueN] )", function() {
         result= Types.hasString( (function(){ return 'string (only when called..)'; })(), 44, new Date(), NaN );
         expect( result ).toBe( true );
     });
+
 
   it("should return false if no argument is of type String", function(){
     result= Types.hasString();
@@ -1506,8 +1536,12 @@ describe("hasString( value, [value1, ..., valueN] )", function() {
     result= Types.hasString( undefined );
     expect( result ).toBe( false );
 
+    result= Types.hasString( Symbol('?') );
+    expect( result ).toBe( false );
+
   });
 });
+
 
 describe("hasNumber( value, [value1, ..., valueN] )", function() {
 
@@ -1543,7 +1577,7 @@ describe("hasNumber( value, [value1, ..., valueN] )", function() {
     result= Types.hasNumber( {string: 'string'}, [4], { n: 1} );
     expect( result ).toBe( false );
 
-    result= Types.hasNumber( new Date(), NaN, null, undefined );
+    result= Types.hasNumber( new Date(), NaN, null, undefined, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1624,7 +1658,7 @@ describe("hasArray( value, [value1, ..., valueN] )", function() {
     result= Types.hasArray( {array: []}, /[]/ig, new Date() );
     expect( result ).toBe( false );
 
-    result= Types.hasArray( NaN, null, undefined );
+    result= Types.hasArray( NaN, null, undefined, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1655,7 +1689,7 @@ describe("hasObject( value, [value1, ..., valueN] )", function() {
     result= Types.hasObject( '234', NaN, /abc/, function(){} );
     expect( result ).toBe( false );
 
-    result= Types.hasObject( 'object', NaN, function(){ return {}; }, undefined );
+    result= Types.hasObject( 'object', NaN, function(){ return {}; }, undefined, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1681,7 +1715,7 @@ describe("hasFunction( value, [value1, ..., valueN] )", function() {
     result= Types.hasFunction( true, false, 23, 'false' );
     expect( result ).toBe( false );
 
-    result= Types.hasFunction( /asdf/ig, undefined, NaN, [], {} );
+    result= Types.hasFunction( /asdf/ig, undefined, NaN, [], {}, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1708,7 +1742,7 @@ describe("hasRegExp( value, [value1, ..., valueN] )", function() {
     result= Types.hasRegExp( function(){ return /asdf/; } );
     expect( result ).toBe( false );
 
-    result= Types.hasRegExp( {}, NaN, null, undefined );
+    result= Types.hasRegExp( {}, NaN, null, undefined, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1739,11 +1773,12 @@ describe("hasDate( value, [value1, ..., valueN] )", function() {
     result= Types.hasDate( true, 234, 'strings', {} );
     expect( result ).toBe( false );
 
-    result= Types.hasDate( function(){ return /asdf/; }, /asdf/, NaN );
+    result= Types.hasDate( function(){ return /asdf/; }, /asdf/, NaN, Symbol() );
     expect( result ).toBe( false );
 
   });
 });
+
 
 describe("hasNaN( value, [value1, ..., valueN] )", function() {
 
@@ -1761,7 +1796,7 @@ describe("hasNaN( value, [value1, ..., valueN] )", function() {
     result= Types.hasNaN( parseInt('123', 10) );
     expect( result ).toBe( false );
 
-    result= Types.hasNaN( true, /123/, '234', [], false );
+    result= Types.hasNaN( true, /123/, '234', [], false, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1784,7 +1819,7 @@ describe("hasNull( value, [value1, ..., valueN] )", function() {
     result= Types.hasNull( true, false, undefined, NaN, [], {} );
     expect( result ).toBe( false );
 
-    result= Types.hasNull( '234', /abc/, function(){}, 44 );
+    result= Types.hasNull( '234', /abc/, function(){}, 44, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1804,7 +1839,7 @@ describe("hasUndefined( value, [value1, ..., valueN] )", function() {
     result= Types.hasUndefined();   // cannot be tested properly in jasmine, manual testing returns true.
     expect( result ).toBe( true );
 
-    result= Types.hasUndefined( true, false, '234', 234, [], {}, NaN, null, new Date(), /abc/ );
+    result= Types.hasUndefined( true, false, '234', 234, [], {}, NaN, null, new Date(), /abc/, Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1825,7 +1860,7 @@ it("should return true if all arguments are of type Boolean", function(){
     result= Types.allBoolean();
     expect( result ).toBe( false );
 
-    result= Types.allBoolean( 'true', function(){}, 234, [], {}, null , undefined, NaN, /234/, new Date() );
+    result= Types.allBoolean( 'true', function(){}, 234, [], {}, null , undefined, NaN, /234/, new Date(), Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -1850,11 +1885,12 @@ describe("allString( value, [value1, ..., valueN] )", function() {
     result= Types.allString( 'string', 'two', true, 'three', 'four' );
     expect( result ).toBe( false );
 
-    result= Types.allString( 'at least one!', true, [1], { aString: 'string' }, 2345, false, undefined, null, NaN, new Date() );
+    result= Types.allString( 'at least one!', true, [1], { aString: 'string' }, 2345, false, undefined, null, NaN, new Date(), Symbol() );
     expect( result ).toBe( false );
 
   });
 });
+
 
 describe("allNumber( value, [value1, ..., valueN] )", function() {
 
@@ -1875,11 +1911,12 @@ describe("allNumber( value, [value1, ..., valueN] )", function() {
     result= Types.allNumber( new Object, 44, 88, 22 );
     expect( result ).toBe( false );
 
-    result= Types.allNumber( NaN, 0 );
+    result= Types.allNumber( NaN, 0, Symbol() );
     expect( result ).toBe( false );
 
   });
 });
+
 
 describe("allStringOrNumber( value, [value1, ..., valueN] )", function() {
 
@@ -1942,7 +1979,7 @@ describe("allObject( value, [value1, ..., valueN] )", function() {
     result= Types.allObject();
     expect( result ).toBe( false );
 
-    result= Types.allObject( {}, { ok: 'is object' }, 0, new Object() );
+    result= Types.allObject( {}, { ok: 'is object' }, 0, new Object(), Symbol() );
     expect( result ).toBe( false );
 
   });
@@ -2118,6 +2155,9 @@ it("should return true if the type of the argument corresponds to the types.js t
 
     result= Types.typeof( function(){} );
     expect( result ).toBe( 'function' );
+
+    result= Types.typeof( Symbol() );
+    expect( result ).toBe( 'symbol' );
 
   });
 });
@@ -2427,6 +2467,9 @@ describe("forceNumber( value )", function() {
         result= Types.typeof( Types.forceNumber() );
         expect( result ).toBe( 'number' );
 
+        result= Types.typeof( Types.forceNumber(Symbol(), Symbol()) );
+        expect( result ).toBe( 'number' );
+
       });
 
 
@@ -2488,6 +2531,9 @@ describe("forceNumber( value )", function() {
         result= Types.forceNumber( new Boolean() ).void;
         expect( result ).toBe( true );
 
+        result= Types.forceNumber( Symbol() ).void;
+        expect( result ).toBe( true );
+
     });
 
 
@@ -2514,8 +2560,12 @@ describe("forceNumber( value )", function() {
         result= Types.forceNumber( NaN, 10 );
         expect( result ).toBe( 10 );
 
+        result= Types.forceNumber( Symbol(), 10 );
+        expect( result ).toBe( 10 );
+
     });
 });
+
 
 describe("forceArray( value )", function() {
 
@@ -2555,6 +2605,9 @@ describe("forceArray( value )", function() {
         result= Types.typeof( Types.forceArray() );
         expect( result ).toBe( 'array' );
 
+        result= Types.typeof( Types.forceArray(Symbol()) );
+        expect( result ).toBe( 'array' );
+
       });
 
 
@@ -2572,7 +2625,7 @@ describe("forceArray( value )", function() {
         result= Types.typeof( Types.forceArray( 10 + 10 === 0, {}, NaN ) );
         expect( result ).toBe( 'array' );
 
-        result= Types.typeof( Types.forceArray( function(){ return true; }, new Date(), Object ) );
+        result= Types.typeof( Types.forceArray( function(){ return true; }, new Date(), Object, Symbol() ) );
         expect( result ).toBe( 'array' );
 
         result= Types.typeof( Types.forceArray( false, true, undefined ) );
@@ -2638,7 +2691,11 @@ describe("forceArray( value )", function() {
         result= equal( Types.forceArray( new Boolean() ), [] );
         expect( result ).toBe( true );
 
+        result= equal( Types.forceArray( Symbol() ), [] );
+        expect( result ).toBe( true );
+
     });
+
 
     it("should return the value of the second argument as an Array, or false(if it is an Array), when the first argument is not a Array", function(){
 
@@ -2708,6 +2765,9 @@ describe("forceObject( value )", function() {
         result= Types.typeof( Types.forceObject() );
         expect( result ).toBe( 'object' );
 
+        result= Types.typeof( Types.forceObject( Symbol() ) );
+        expect( result ).toBe( 'object' );
+
       });
 
 
@@ -2725,7 +2785,7 @@ describe("forceObject( value )", function() {
         result= Types.typeof( Types.forceObject( 10 + 10 === 0, NaN ) );
         expect( result ).toBe( 'object' );
 
-        result= Types.typeof( Types.forceObject( function(){ return true; }, new Date(), Object ) );
+        result= Types.typeof( Types.forceObject( function(){ return true; }, new Date(), Object, Symbol() ) );
         expect( result ).toBe( 'object' );
 
         result= Types.typeof( Types.forceObject( false, true, undefined ) );
@@ -2747,7 +2807,6 @@ describe("forceObject( value )", function() {
 
         result= Types.forceObject( new Object({hi: 'hi'}) );
         expect( result ).toEqual( {hi: 'hi'} );
-
     });
 
 
@@ -2785,7 +2844,11 @@ describe("forceObject( value )", function() {
         result= Types.forceObject( undefined );
         expect( result ).toEqual( {} );
 
+        result= Types.forceObject( Symbol() );
+        expect( result ).toEqual( {} );
+
     });
+
 
     it("should return the value of the second argument as an Object(if it is an Object), or {}, when the first argument is not a Object", function(){
 
@@ -2811,6 +2874,9 @@ describe("forceObject( value )", function() {
       expect( result ).toEqual( {firstArg: 'no object'} );
 
       result= Types.forceObject( new RegExp(), {firstArg: 'no object'} );
+      expect( result ).toEqual( {firstArg: 'no object'} );
+
+      result= Types.forceObject( Symbol(), {firstArg: 'no object'} );
       expect( result ).toEqual( {firstArg: 'no object'} );
 
     });
@@ -2854,7 +2920,8 @@ describe("forceFunction( value )", function() {
         result= Types.typeof( Types.forceFunction( undefined ) );
         expect( result ).toBe( 'function' );
 
-
+        result= Types.typeof( Types.forceFunction( Symbol() ) );
+        expect( result ).toBe( 'function' );
       });
 
 
@@ -2872,7 +2939,7 @@ describe("forceFunction( value )", function() {
         result= Types.typeof( Types.forceFunction( 10 + 10 === 0, NaN ) );
         expect( result ).toBe( 'function' );
 
-        result= Types.typeof( Types.forceFunction( (function(){ return true; })(), new Date() ) );
+        result= Types.typeof( Types.forceFunction( (function(){ return true; })(), new Date(), Symbol() ) );
         expect( result ).toBe( 'function' );
 
         result= Types.typeof( Types.forceFunction( false, true, undefined ) );
@@ -2916,8 +2983,6 @@ describe("forceFunction( value )", function() {
         result= Types.forceFunction( undefined )();
         expect( result ).toBe( undefined );
 
-        // don't know yet how to better test for types.js default empty function with jasmin.
-        // tested this thoroughly by hand anyways, but should be in here eventually..
     });
 
 
@@ -3039,6 +3104,7 @@ it( "should equal aliases", function(){
     expect( Types.typeof ).toEqual( Types.typeOf );
 
 });
+
 
 it( "should set the defaults right", function(){
 
