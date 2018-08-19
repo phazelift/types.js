@@ -9,20 +9,6 @@ types.js
 **Why**
 
 Because only with dynamic type checking I can be 100% sure my app handles type issues properly at run time.
-It really gives me a better nights rest!
-
-```javascript
-// even with TypeScript I'd never do:
-function stringify( arr: array ){
-	return arr.map( (value) => value+ '' );
-	// there is no TypeScript at run time, no handling
-	// if for untested reason the type of arr is null at run time,
-	// my app would crash in all its glory
-
-	// I prefer 100% safety at all times, simple and functional:
-	return forceArray(arr).map( (value) => value+ '' );
-}
-```
 
 <br/>
 
