@@ -575,6 +575,9 @@ change log
 ==========
 
 
+**1.9.0**
+
+- adds babel transpiler as dev dependency for better cross browser compatibility
 
 **1.8.0**
 

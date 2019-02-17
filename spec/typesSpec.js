@@ -1,7 +1,7 @@
 //
 // Jasmine tests for types.js
 //
-const Types= require( '../types.js' );
+const Types= require( '../types.min.js' );
 
 Types.disableLogging()
 

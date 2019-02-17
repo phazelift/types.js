@@ -1,9 +1,11 @@
 {
   "name": "types.js",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "A tiny and fast dynamic type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
+    "uglify": "uglifyjs types.js -c -m -o types.min.js",
+    "build": "coffee -c --transpile types.coffee && npm run uglify",
     "test": "jasmine"
   },
   "repository": {
@@ -33,6 +35,8 @@
   },
   "homepage": "https://github.com/phazelift/types.js",
   "devDependencies": {
+    "@babel/core": "latest",
+    "@babel/preset-env": "latest",
     "jasmine": "^3.1.0"
   },
   "dependencies": {}
