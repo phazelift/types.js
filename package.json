@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "description": "A tiny and fast dynamic type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
@@ -37,7 +37,6 @@
   "devDependencies": {
     "@babel/core": "latest",
     "@babel/preset-env": "latest",
-    "jasmine": "latest"
-  },
-  "dependencies": {}
+    "jasmine": "^4.1.0"
+  }
 }
