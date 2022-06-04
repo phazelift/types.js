@@ -2,7 +2,7 @@ types.js
 ========
 <br/>
 
-**A tiny and fast dynamic type checker/enforcer library.**
+### A tiny and fast dynamic type checker/enforcer library.
 
 <br/>
 
@@ -14,18 +14,18 @@ Because only with dynamic type checking I can be 100% sure my app handles type i
 
 **Performance**
 
-The performance penalty is negligible for the majority of operations. It's roughly between 0.00002ms and 0.0001ms per call (on my 4yr old laptop).
+With reduced size and optimized for speed, the performance penalty is negligible for the majority of operations. It's roughly between 0.00002ms and 0.0001ms per call (on my 4yr old laptop).
 
 <br/>
 
 **Features**
 
-- introduces new types and a typeof replacement for proper type assessment
 - fixes NaN, array, null, etc..
 - can check one or multiple values at once
 - 4 convenience forms: is[type], not[type], has[type] and all[type]
-- force any return value to be of any specific type
-- create immutable 'enum' objects
+- provides a typeof replacement for proper and reliable type assessment
+- you can force/ensure any return value to be of any specific type
+- create basic immutable 'enum' objects
 - battle tested
 
 <br/>
@@ -61,7 +61,7 @@ intoArray( '1', '2', '3' );
 
 allDefined( 'good', false, 0 );
 // true
-hasObject( 'not', 'really' );
+hasObject( 'not', ['really'] );
 // false
 
 const COLORS= enumerate( ['RED', 'GREEN', 'BLUE'] );
@@ -151,29 +151,28 @@ var types= Types;
 // in node.js with npm
 var types= require( 'types.js' );
 
-// initialize a variable and be sure what type it will have in any case:
 var x;
 types.forceString( x );
-// '' (empty String)
+// ''
 types.forceString( null, 'ok' );
-// 'ok' (as String)
+// 'ok'
 types.forceString( null, [1, 2, 3] );
-// '' (empty String)
+// ''
 
 // when Types.autoConvert == true (default)
 types.forceString(33, 'not used');
-// '33' (as String)
+// '33'
 types.forceNumber('35px');
-// 35 (as Number)
+// 35
 
 // when Types.autoConvert == false
 types.forceString(33, 'must be string');
 // 'must be string'
 
 types.forceNumber( true, 0 );
-// 0 (as Number)
+// 0
 types.forceBoolean('35px');
-// false (as Boolean)
+// false
 types.forceArray("you'll get an array!");
 // []
 types.intoArray( 'hi', 'there' );
@@ -184,10 +183,9 @@ types.intoArray( '', 0, {}, [] );
 // [ '', 1, {}, [] ]
 
 var func= null;
-
 // call a function that might not exist anymore:
 types.forceFunction( func )( 'arguments for func' );
-// no crash, default empty function is called, returns undefined
+// your app won't crash, default empty function is called, returns undefined
 
 // some default type checking:
 types.isDefined()

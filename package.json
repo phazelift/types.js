@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "1.9.4",
+  "version": "1.9.5",
   "description": "A tiny and fast dynamic type checker/enforcer library",
   "main": "types.min.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "all",
     "enum"
   ],
-  "author": "Dennis Raymondo <phazelift@gmail.com> (https://github.com/phazelift/)",
+  "author": "dennis raymondo van der sluis",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/phazelift/types.js/issues"
