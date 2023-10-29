@@ -568,10 +568,18 @@ forceObject		| {}
 forceArray		| []
 forceFunction	| function(){}
 forceRegExp		| /(?:)/
+forceDate		| new Date
 ___
 change log
 ==========
 
+
+**2.0.0**
+
+- adds TypeScript support!
+- adds Date literal, now returning: new Date
+- fix enum and regexp type not always being properly parsed
+- renamed types.min.js -> index.js
 
 **1.9.0**
 
@@ -630,15 +638,10 @@ ___
 
 Optimized and reworked the codebase, and some adjustments to tests.
 
-Updated the readme.
 ___
 **1.3.9**
 
-Removed 'unknown' from types.js type definitions. It was meant to be like a final state, for if no other matching type could
-be found, but in the codebase as it is now, that state can never be reached.. If Javascript ever invents a brand new type,
-types.js will return 'defined' on that one if I would not take action and implement support for it.
-
-Updated the readme.
+Removed 'unknown' from types.js type definitions.
 
 ___
 **1.3.5**
