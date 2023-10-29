@@ -1,6 +1,12 @@
 types.js
 ========
-<br/>
+
+![npm](https://img.shields.io/npm/v/types.js)
+![npm bundle size](https://img.shields.io/bundlephobia/min/types.js)
+![Static Badge](https://img.shields.io/badge/code_coverage-100%25-darkgreen)
+![Static Badge](https://img.shields.io/badge/supports-TypeScript-orange)
+![GitHub](https://img.shields.io/github/license/phazelift/types.js)
+
 
 ### A tiny and fast dynamic type checker/enforcer library.
 
@@ -14,18 +20,19 @@ Because only with dynamic type checking I can be 100% sure my app handles type i
 
 **Performance**
 
-With reduced size and optimized for speed, the performance penalty is negligible for the majority of operations. It's roughly between 0.00002ms and 0.0001ms per call (on my 4yr old laptop).
+With reduced size and optimized for speed, the performance penalty is negligible for the majority of operations.
 
 <br/>
 
 **Features**
 
 - fixes NaN, array, null, etc..
-- can check one or multiple values at once
-- 4 convenience forms: is[type], not[type], has[type] and all[type]
+- can check multiple values at once
+- 5 convenience forms: is[type], not[type], has[type], all[type], getFirst[type]
 - provides a typeof replacement for proper and reliable type assessment
 - you can force/ensure any return value to be of any specific type
 - create basic immutable 'enum' objects
+- support for TypeScript
 - battle tested
 
 <br/>

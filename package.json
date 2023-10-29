@@ -1,6 +1,6 @@
 {
   "name": "types.js",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A tiny and fast dynamic type checker/enforcer library",
   "main": "index.js",
   "scripts": {
