@@ -54,7 +54,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     number = new Number();
     number["void"] = true;
     return number;
-  }()), _defineProperty(_LITERALS, REGEXP, new RegExp()), _LITERALS);
+  }()), _defineProperty(_LITERALS, REGEXP, new RegExp()), _defineProperty(_LITERALS, DATE, new Date()), _LITERALS);
 
   log = function log() {
     if (Types.logging) {
@@ -68,7 +68,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
   upFirst = function upFirst(str) {
-    return str = str[0].toUpperCase() + str.slice(1);
+    if (str === 'regexp') {
+      return 'RegExp';
+    } else {
+      return str[0].toUpperCase() + str.slice(1);
+    }
   };
 
   instanceOf = function instanceOf(type, value) {
@@ -113,14 +117,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return typeOf(value) && instanceOf(Date, value);
   }), _defineProperty(_TYPES, NUMBER, function (value) {
     return typeOf(value, NUMBER) && value === value || typeOf(value) && instanceOf(Number, value);
+  }), _defineProperty(_TYPES, ENUM, function (value) {
+    return Types.forceObject(value).hasOwnProperty(ENUM_ID);
   }), _defineProperty(_TYPES, OBJECT, function (value) {
     return typeOf(value) && value !== null && !instanceOf(Boolean, value) && !instanceOf(Number, value) && !instanceOf(Array, value) && !instanceOf(RegExp, value) && !instanceOf(Date, value);
   }), _defineProperty(_TYPES, SYMBOL, function (value) {
     return typeOf(value, SYMBOL);
   }), _defineProperty(_TYPES, NAN, function (value) {
     return typeOf(value, NUMBER) && value !== value;
-  }), _defineProperty(_TYPES, ENUM, function (value) {
-    return Types.forceObject(value).hasOwnProperty(ENUM_ID);
   }), _defineProperty(_TYPES, DEFINED, function (value) {
     return value !== void 0;
   }), _TYPES);

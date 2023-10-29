@@ -1,7 +1,7 @@
 //
 // Jasmine tests for types.js
 //
-const Types= require( '../types.min.js' );
+const Types= require( '../index.js' );
 
 Types.disableLogging()
 
@@ -3025,13 +3025,13 @@ describe( "enum( items, offset )", function(){
     const COLORS= [ 'RED', 'GREEN', 'BLUE' ];
 
 
-    it( "should always return an object", function(){
+    it( "should always return an enum", function(){
 
         result= Types.enum();
-        expect( Types.typeof(result) ).toBe( 'object' );
+        expect( Types.typeof(result) ).toBe( 'enum' );
 
         result= Types.enum( new Date, '?' );
-        expect( Types.typeof(result) ).toBe( 'object' );
+        expect( Types.typeof(result) ).toBe( 'enum' );
     });
 
 

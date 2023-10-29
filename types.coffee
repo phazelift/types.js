@@ -60,13 +60,14 @@ LITERALS=
 		number.void= true
 		return number
 	[REGEXP]			: new RegExp
+	[DATE]			: new Date
 
 
 log 			= ( args... ) -> if Types.logging then console.log args...
 logForce		= ->
 
 # an unsafe internal for making the first character of a type id uppercase
-upFirst		= ( str ) -> str= str[0].toUpperCase()+ str[1..]
+upFirst		= ( str ) -> if str is 'regexp' then 'RegExp' else str[0].toUpperCase()+ str[1..]
 
 instanceOf	= ( type, value ) -> value instanceof type
 
@@ -94,10 +95,10 @@ TYPES=
 	[REGEXP]			: ( value ) -> typeOf(value) and instanceOf RegExp, value
 	[DATE]			: ( value ) -> typeOf(value) and instanceOf Date, value
 	[NUMBER]			: ( value ) -> typeOf(value, NUMBER) and (value is value) or ( typeOf(value) and instanceOf(Number, value) )
+	[ENUM]			: ( value ) -> Types.forceObject(value).hasOwnProperty ENUM_ID
 	[OBJECT]			: ( value ) -> typeOf(value) and (value isnt null) and not instanceOf(Boolean, value) and not instanceOf(Number, value) and not instanceOf(Array, value) and not instanceOf(RegExp, value) and not instanceOf(Date, value)
 	[SYMBOL]			: ( value ) -> typeOf value, SYMBOL
 	[NAN]				: ( value ) -> typeOf(value, NUMBER) and (value isnt value)
-	[ENUM]			: ( value ) -> Types.forceObject(value).hasOwnProperty ENUM_ID
 	[DEFINED]		: ( value ) -> value isnt undefined
 
 TYPES.StringOrNumber= (value) -> TYPES[STRING](value) or TYPES[NUMBER](value)
