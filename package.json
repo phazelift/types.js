@@ -1,10 +1,10 @@
 {
   "name": "types.js",
-  "version": "1.9.5",
+  "version": "2.0.0",
   "description": "A tiny and fast dynamic type checker/enforcer library",
-  "main": "types.min.js",
+  "main": "index.js",
   "scripts": {
-    "uglify": "terser types.js -c -m -o types.min.js",
+    "uglify": "terser types.js -c -m -o index.js",
     "build": "coffee -c --transpile types.coffee && npm run uglify",
     "test": "jasmine"
   },
@@ -37,6 +37,7 @@
   "devDependencies": {
     "@babel/core": "latest",
     "@babel/preset-env": "latest",
-    "jasmine": "^4.1.0"
+    "jasmine": "^4.1.0",
+    "typescript": "^5.2.2"
   }
 }
